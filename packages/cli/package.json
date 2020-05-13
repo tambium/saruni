@@ -1,3 +1,18 @@
 {
-  "name": "cli"
+  "name": "cli",
+  "scripts": {
+    "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist",
+    "serve": "node dist/index.js",
+    "dev": "yarn build && yarn serve"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/yargs": "^15.0.4"
+  },
+  "dependencies": {
+    "yargs": "^15.3.1"
+  }
 }
