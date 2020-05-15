@@ -1,5 +1,10 @@
 {
   "name": "create-saruni-app",
+  "scripts": {
+    "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist",
+    "serve": "node dist/create-saruni-app.js",
+    "dev": "yarn build && yarn serve"
+  },
   "dependencies": {
     "axios": "^0.19.2",
     "chalk": "^4.0.0",
@@ -8,5 +13,11 @@
     "execa": "^4.0.1",
     "listr": "^0.14.3",
     "tmp": "^0.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0"
   }
 }

@@ -1809,6 +1809,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "create-saruni-app@workspace:packages/create-saruni-app"
   dependencies:
+    "@babel/cli": ^7.8.4
+    "@babel/core": ^7.9.6
+    "@babel/preset-env": ^7.9.6
+    "@babel/preset-typescript": ^7.9.0
     axios: ^0.19.2
     chalk: ^4.0.0
     check-node-version: ^4.0.3
