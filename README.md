@@ -1,6 +1,6 @@
 # Saruni
 
-Saruni is a web application framework that leans on a bleeding-edge stack to improve developer experience. Our goal is for small development teams to be comfortable building world-class applications without breaking a sweat.
+Saruni is a web application framework that uses a bleeding-edge stack to improve developer experience. Our goal is for small development teams to be comfortable building world-class applications without breaking a sweat. Saruni suggests helpful conventions but makes every effort to give control to the developer.
 
 ## Technologies
 
