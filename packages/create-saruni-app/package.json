@@ -1,9 +1,16 @@
 {
   "name": "create-saruni-app",
+  "version": "0.0.3",
+  "bin": "./dist/create-saruni-app.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist",
     "serve": "node dist/create-saruni-app.js",
-    "dev": "yarn build && yarn serve"
+    "dev": "yarn build && yarn serve",
+    "prepublishOnly": "yarn build",
+    "publish": "yarn npm publish"
   },
   "dependencies": {
     "axios": "^0.19.2",

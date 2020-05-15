@@ -1,11 +1,14 @@
 {
   "name": "saruni",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "packages/*"
   ],
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:tambium/saruni.git",
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "publish": "yarn workspaces foreach -pt npm publish"
+  }
 }

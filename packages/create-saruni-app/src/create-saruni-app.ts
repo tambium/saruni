@@ -52,7 +52,11 @@ const newAppDir = path.resolve(process.cwd(), targetDir);
 const appDirExists = fs.existsSync(newAppDir);
 
 if (appDirExists && fs.readdirSync(newAppDir).length > 0) {
-  console.error(`'${newAppDir}' already exists and is not empty.`);
+  console.error(
+    `The project directory you specified (${chalk.green(
+      newAppDir
+    )}) already exists and is not empty. Please try again with a different project directory.`
+  );
   process.exit(1);
 }
 
@@ -64,7 +68,7 @@ const createProjectTasks = ({ newAppDir }) => {
 
   return [
     {
-      title: `${appDirExists ? "Using" : "Creating"} directory '${newAppDir}'`,
+      title: `Creating a new Saruni app in ${chalk.green(newAppDir)}.`,
       task: () => {
         fs.mkdirSync(newAppDir, { recursive: true });
       },
@@ -106,7 +110,7 @@ const installNodeModulesTasks = ({ newAppDir }) => {
       },
     },
     {
-      title: "Running `yarn install`... (This could take a while)",
+      title: "Installing packages. You’ll be all set soon.",
       task: () => {
         return execa("yarn install", {
           shell: true,
@@ -133,7 +137,7 @@ new Listr(
   .run()
   .then(() => {
     console.log();
-    console.log(`Success! We've created your app in '${newAppDir}'`);
+    console.log(`Success! We've created your app in ${newAppDir}`);
     console.log();
     console.log(
       "Inside that directory you can run `yarn dev` to start the development server."
