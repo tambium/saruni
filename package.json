@@ -10,5 +10,8 @@
   },
   "scripts": {
     "publish": "yarn workspaces foreach -pt npm publish"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.3"
   }
 }
