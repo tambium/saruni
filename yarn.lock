@@ -1158,7 +1158,6 @@ __metadata:
     "@babel/preset-env": ^7.9.6
     "@babel/preset-typescript": ^7.9.0
     "@prisma/cli": ^2.0.0-beta.6
-    "@saruni/dev-server": "workspace:packages/dev-server"
     "@saruni/internal": "workspace:packages/internal"
     "@types/findup-sync": ^2.0.2
     "@types/fs-extra": ^9.0.1
