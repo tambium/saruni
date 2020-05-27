@@ -17,7 +17,6 @@
     "@types/yargs": "^15.0.4"
   },
   "dependencies": {
-    "@saruni/utils": "workspace:packages/utils",
     "chalk": "^4.0.0",
     "execa": "^4.0.2",
     "findup-sync": "^4.0.0",

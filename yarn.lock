@@ -1146,7 +1146,6 @@ __metadata:
     "@babel/core": ^7.9.6
     "@babel/preset-env": ^7.9.6
     "@babel/preset-typescript": ^7.9.0
-    "@saruni/utils": "workspace:packages/utils"
     "@types/findup-sync": ^2.0.2
     "@types/fs-extra": ^9.0.1
     "@types/node": ^14.0.5
@@ -1179,29 +1178,6 @@ __metadata:
     nodemon: ^2.0.4
     qs: ^6.9.4
     require-dir: ^1.2.0
-  languageName: unknown
-  linkType: soft
-
-"@saruni/utils@workspace:packages/utils":
-  version: 0.0.0-use.local
-  resolution: "@saruni/utils@workspace:packages/utils"
-  dependencies:
-    "@babel/cli": ^7.8.4
-    "@babel/core": ^7.9.6
-    "@babel/plugin-proposal-class-properties": ^7.8.3
-    "@babel/plugin-transform-modules-commonjs": ^7.9.6
-    "@babel/preset-env": ^7.9.6
-    "@babel/preset-typescript": ^7.9.0
-    "@types/execa": ^2.0.0
-    "@types/findup-sync": ^2.0.2
-    "@types/fs-extra": ^9.0.1
-    "@types/node": ^14.0.5
-    "@types/yargs": ^15.0.4
-    chalk: ^4.0.0
-    execa: ^4.0.2
-    findup-sync: ^4.0.0
-    fs-extra: ^9.0.0
-    yargs: ^15.3.1
   languageName: unknown
   linkType: soft
 
@@ -1273,15 +1249,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 3/6414495b5995fcb8274feb8b1f113c0685160ea7781e75c638325c6e7a0c226d0c554fa622fe3d278470358c99f68a5994fe49e1b104736f76f3fb3b509e375f
-  languageName: node
-  linkType: hard
-
-"@types/execa@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/execa@npm:2.0.0"
-  dependencies:
-    execa: "*"
-  checksum: 3/909e96b28c3add4853bd29f85d34e71c8bb13ccaa9134981a802eb4216eb2fc7fbff7cb9b6992fcbf9c0fde761df6e69072a045073bd9e9615ef923c693cf7a7
   languageName: node
   linkType: hard
 
@@ -2668,23 +2635,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"execa@npm:*, execa@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "execa@npm:4.0.2"
-  dependencies:
-    cross-spawn: ^7.0.0
-    get-stream: ^5.0.0
-    human-signals: ^1.1.1
-    is-stream: ^2.0.0
-    merge-stream: ^2.0.0
-    npm-run-path: ^4.0.0
-    onetime: ^5.1.0
-    signal-exit: ^3.0.2
-    strip-final-newline: ^2.0.0
-  checksum: 3/c48f3d6a044daa1bb5d93486e1c8eee12a8724b439b7f8c270c556a37cf7e2ffd528a86d2ef08adcbe78b485956cfca56c6027ec15d8370bef959097b9ba23ba
-  languageName: node
-  linkType: hard
-
 "execa@npm:^4.0.1":
   version: 4.0.1
   resolution: "execa@npm:4.0.1"
@@ -2699,6 +2649,23 @@ __metadata:
     signal-exit: ^3.0.2
     strip-final-newline: ^2.0.0
   checksum: 3/334a54e5a07290f1b988069db52ff4525e992e1ac6fc7449495635f773ff57aea0d0110b4544796e640f9a47cc14291273ff607dae4534feb31d353203b5b56f
+  languageName: node
+  linkType: hard
+
+"execa@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "execa@npm:4.0.2"
+  dependencies:
+    cross-spawn: ^7.0.0
+    get-stream: ^5.0.0
+    human-signals: ^1.1.1
+    is-stream: ^2.0.0
+    merge-stream: ^2.0.0
+    npm-run-path: ^4.0.0
+    onetime: ^5.1.0
+    signal-exit: ^3.0.2
+    strip-final-newline: ^2.0.0
+  checksum: 3/c48f3d6a044daa1bb5d93486e1c8eee12a8724b439b7f8c270c556a37cf7e2ffd528a86d2ef08adcbe78b485956cfca56c6027ec15d8370bef959097b9ba23ba
   languageName: node
   linkType: hard
 
