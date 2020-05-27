@@ -3,6 +3,11 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "ds": "./dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "module": "src/index.ts",
   "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {
@@ -25,6 +30,7 @@
   },
   "dependencies": {
     "@babel/register": "^7.9.0",
+    "@saruni/internal": "workspace:packages/internal",
     "chokidar": "^3.4.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.4",

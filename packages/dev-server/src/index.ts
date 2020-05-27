@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import type { Request, Response } from "express";
 import babelRequireHook from "@babel/register";
@@ -6,6 +7,8 @@ import express from "express";
 import path from "path";
 import qs from "qs";
 import requireDir from "require-dir";
+
+import { getPaths } from "@saruni/internal";
 
 const parseBody = (rawBody: string | Buffer) => {
   if (typeof rawBody === "string") {
@@ -67,7 +70,7 @@ const expressResponseForLambdaError = (
 
 const app = express();
 
-const functionsWatcher = chokidar.watch("./../dev-server/functions");
+const functionsWatcher = chokidar.watch(getPaths().api.functions);
 
 const importFreshFunctions = (functionsPath) => {
   Object.keys(require.cache).forEach((key) => {
@@ -82,20 +85,20 @@ const importFreshFunctions = (functionsPath) => {
 
 let functions;
 
-functions = importFreshFunctions(path.resolve("./../dev-server/functions"));
+functions = importFreshFunctions(path.resolve(getPaths().api.functions));
 
 functionsWatcher.on("all", () => {
   console.log("lambda function change");
 
   babelRequireHook({
-    extends: path.join("./../dev-server/.babelrc.js"),
+    // extends: path.join("./../dev-server/.babelrc.js"),
     extensions: [".js", ".ts"],
-    only: [path.resolve("./../dev-server/functions")],
+    only: [path.resolve(getPaths().api.functions)],
     ignore: ["node_modules"],
     cache: false,
   });
 
-  functions = importFreshFunctions(path.resolve("./../dev-server/functions"));
+  functions = importFreshFunctions(path.resolve(getPaths().api.functions));
 });
 
 app.get("/:functionName", async (req, res) => {
