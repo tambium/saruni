@@ -2,8 +2,6 @@ import chalk from "chalk";
 import execa from "execa";
 import fs from "fs-extra";
 
-import { projectPath } from "@saruni/utils";
-
 interface CreateKeyParams {
   name: string;
 }

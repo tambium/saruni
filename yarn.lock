@@ -1123,6 +1123,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prisma/cli@npm:^2.0.0-beta.6":
+  version: 2.0.0-previewnull-1
+  resolution: "@prisma/cli@npm:2.0.0-previewnull-1"
+  dependencies:
+    arg: ^4.1.2
+    chalk: ^3.0.0
+    strip-indent: ^3.0.0
+  checksum: 3/40bcc572587a32bf06e4564f683dd82fe47d6014d7f06efa1b2939a88f67957de5df111ec79d9051fc9830de6d8d6bd2e0599bb06f88726c74c7c92dc44aafe3
+  languageName: node
+  linkType: hard
+
 "@samverschueren/stream-to-observable@npm:^0.3.0":
   version: 0.3.0
   resolution: "@samverschueren/stream-to-observable@npm:0.3.0"
@@ -1146,6 +1157,8 @@ __metadata:
     "@babel/core": ^7.9.6
     "@babel/preset-env": ^7.9.6
     "@babel/preset-typescript": ^7.9.0
+    "@prisma/cli": ^2.0.0-beta.6
+    "@saruni/internal": "workspace:packages/internal"
     "@types/findup-sync": ^2.0.2
     "@types/fs-extra": ^9.0.1
     "@types/node": ^14.0.5
@@ -1155,6 +1168,9 @@ __metadata:
     findup-sync: ^4.0.0
     fs-extra: ^9.0.0
     yargs: ^15.3.1
+  bin:
+    saruni: ./dist/index.js
+    sr: ./dist/index.js
   languageName: unknown
   linkType: soft
 
@@ -1178,6 +1194,16 @@ __metadata:
     nodemon: ^2.0.4
     qs: ^6.9.4
     require-dir: ^1.2.0
+  languageName: unknown
+  linkType: soft
+
+"@saruni/internal@workspace:packages/internal":
+  version: 0.0.0-use.local
+  resolution: "@saruni/internal@workspace:packages/internal"
+  dependencies:
+    "@types/node": ^14.0.5
+    findup-sync: ^4.0.0
+    typescript: ^3.9.3
   languageName: unknown
   linkType: soft
 
@@ -1514,6 +1540,13 @@ __metadata:
     delegates: ^1.0.0
     readable-stream: ^2.0.6
   checksum: 3/2d6fdb0ddde9b8cb120b6851b42c75f6b6db78b540b579a00d144ad38cb9e1bdf1248e5454049fcf5b47ef61d1a6f2ea433a8e38984158afd441bc1e0db7a625
+  languageName: node
+  linkType: hard
+
+"arg@npm:^4.1.2":
+  version: 4.1.3
+  resolution: "arg@npm:4.1.3"
+  checksum: 3/81b3b40b1529c4fbf75b12f7c3e6fb2dcce9e78072063babc169de9b4f40777788f3d2b04380f659ef676a756e03ccfbfe78adf4477353bda906295fa69dab89
   languageName: node
   linkType: hard
 
@@ -4274,6 +4307,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"min-indent@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "min-indent@npm:1.0.0"
+  checksum: 3/caed9fdecd22dbb2d73025c9fa5d808e6085ebeb1af355b4ac1b59018c7f9cd7dc9b2daf38af405367f80dcbd2f4e971d61d93476af27f65988488e808244cb1
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4":
   version: 3.0.4
   resolution: "minimatch@npm:3.0.4"
@@ -5721,6 +5761,15 @@ resolve@^1.3.2:
   version: 2.0.0
   resolution: "strip-final-newline@npm:2.0.0"
   checksum: 3/74dbd8a602409706748db730200efab53ba739ed7888310e74e45697efbd760981df6d6f0fa34b23e973135fb07d3b22adae6e6d58898f692a094e49692c6c33
+  languageName: node
+  linkType: hard
+
+"strip-indent@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "strip-indent@npm:3.0.0"
+  dependencies:
+    min-indent: ^1.0.0
+  checksum: 3/4a7860e94372753b90a48d032758464efbf194880880fd7636965b7137ae4af24ce77a43d223a602cac787e2e95214aaa2f2470a65986e3d6ffa0e1c3dd887f6
   languageName: node
   linkType: hard
 
