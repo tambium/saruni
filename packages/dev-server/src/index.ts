@@ -91,7 +91,7 @@ functionsWatcher.on("all", () => {
   console.log("lambda function change");
 
   babelRequireHook({
-    // extends: path.join("./../dev-server/.babelrc.js"),
+    extends: path.join(getPaths().base, ".babelrc.js"),
     extensions: [".js", ".ts"],
     only: [path.resolve(getPaths().api.functions)],
     ignore: ["node_modules"],
@@ -106,9 +106,14 @@ app.get("/:functionName", async (req, res) => {
 
   const event = lambdaEventForExpressRequest(req);
 
+  const context = {};
+
   if (fn && fn.handler && typeof fn.handler === "function") {
     try {
-      const result = (await fn.handler({}, event)) as APIGatewayProxyResult;
+      const result = (await fn.handler(
+        event,
+        context
+      )) as APIGatewayProxyResult;
 
       expressResponseForLambdaResult(res, result);
     } catch (e) {
