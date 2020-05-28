@@ -2,6 +2,7 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import type { Request, Response } from "express";
 import babelRequireHook from "@babel/register";
+import bodyParser from "body-parser";
 import chokidar from "chokidar";
 import express from "express";
 import path from "path";
@@ -11,7 +12,7 @@ import requireDir from "require-dir";
 import { getPaths } from "@saruni/internal";
 
 babelRequireHook({
-  extends: path.join(getPaths().base, ".babelrc.js"),
+  extends: path.join(getPaths().api.base, ".babelrc.js"),
   extensions: [".js", ".ts"],
   only: [path.resolve(getPaths().api.base)],
   ignore: ["node_modules"],
@@ -78,6 +79,13 @@ const expressResponseForLambdaError = (
 
 const app = express();
 
+app.use(
+  bodyParser.text({
+    type: ["text/*", "application/json", "multipart/form-data"],
+  })
+);
+app.use(bodyParser.raw({ type: "*/*" }));
+
 const apiWatcher = chokidar.watch(getPaths().api.base);
 
 const importFreshFunctions = (functionsPath) => {
@@ -117,7 +125,7 @@ apiWatcher.on("ready", () => {
   });
 });
 
-app.get("/", (_, res) => {
+app.all("/", (_, res) => {
   res.send(`
   <html>
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
@@ -132,7 +140,21 @@ app.get("/", (_, res) => {
   `);
 });
 
-app.get("/:functionName", async (req, res) => {
+const handlerCallback = (expressResFn: Response) => (
+  error: Error,
+  lambdaResult: APIGatewayProxyResult
+) => {
+  if (error) {
+    return expressResponseForLambdaError(expressResFn, error);
+  }
+  return expressResponseForLambdaResult(expressResFn, lambdaResult);
+};
+
+function isPromise<T>(val: any): val is Promise<T> {
+  return val && val.then && typeof val.then === "function";
+}
+
+app.all("/:functionName", async (req, res) => {
   const fn = functions[req.params.functionName];
 
   const event = lambdaEventForExpressRequest(req);
@@ -141,12 +163,15 @@ app.get("/:functionName", async (req, res) => {
 
   if (fn && fn.handler && typeof fn.handler === "function") {
     try {
-      const result = (await fn.handler(
-        event,
-        context
-      )) as APIGatewayProxyResult;
+      const lambdaPromise = fn.handler(event, context, handlerCallback(res)) as
+        | APIGatewayProxyResult
+        | Promise<APIGatewayProxyResult>;
 
-      expressResponseForLambdaResult(res, result);
+      if (isPromise(lambdaPromise)) {
+        const result = await lambdaPromise;
+
+        expressResponseForLambdaResult(res, result);
+      }
     } catch (e) {
       expressResponseForLambdaError(res, e);
     }
