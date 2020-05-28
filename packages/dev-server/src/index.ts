@@ -117,6 +117,21 @@ apiWatcher.on("ready", () => {
   });
 });
 
+app.get("/", (_, res) => {
+  res.send(`
+  <html>
+  <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
+    <div>the following functions are avaliable</div>
+    <ul>
+  ${Object.entries(functions).map(([key]) => {
+    return `<li><a href="/${key}">${key}</a></li>`;
+  })}
+    </ul>
+  </body>
+</html>
+  `);
+});
+
 app.get("/:functionName", async (req, res) => {
   const fn = functions[req.params.functionName];
 
