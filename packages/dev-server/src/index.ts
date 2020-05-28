@@ -10,6 +10,14 @@ import requireDir from "require-dir";
 
 import { getPaths } from "@saruni/internal";
 
+babelRequireHook({
+  extends: path.join(getPaths().base, ".babelrc.js"),
+  extensions: [".js", ".ts"],
+  only: [path.resolve(getPaths().api.base)],
+  ignore: ["node_modules"],
+  cache: false,
+});
+
 const parseBody = (rawBody: string | Buffer) => {
   if (typeof rawBody === "string") {
     return { body: rawBody, isBase64Encoded: false };
@@ -70,7 +78,7 @@ const expressResponseForLambdaError = (
 
 const app = express();
 
-const functionsWatcher = chokidar.watch(getPaths().api.functions);
+const apiWatcher = chokidar.watch(getPaths().api.base);
 
 const importFreshFunctions = (functionsPath) => {
   Object.keys(require.cache).forEach((key) => {
@@ -87,18 +95,26 @@ let functions;
 
 functions = importFreshFunctions(path.resolve(getPaths().api.functions));
 
-functionsWatcher.on("all", () => {
-  console.log("lambda function change");
+apiWatcher.on("ready", () => {
+  apiWatcher.on("all", (event) => {
+    if (/add/.test(event)) {
+      console.log("New file added. Rebuilding...");
+      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      console.log("New functions deployed.");
+    }
 
-  babelRequireHook({
-    extends: path.join(getPaths().base, ".babelrc.js"),
-    extensions: [".js", ".ts"],
-    only: [path.resolve(getPaths().api.functions)],
-    ignore: ["node_modules"],
-    cache: false,
+    if (/change/.test(event)) {
+      console.log("Code change detected. Rebuilding...");
+      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      console.log("New functions deployed.");
+    }
+
+    if (/unlink/.test(event)) {
+      console.log("Some file deleted. Rebuilding...");
+      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      console.log("New functions deployed.");
+    }
   });
-
-  functions = importFreshFunctions(path.resolve(getPaths().api.functions));
 });
 
 app.get("/:functionName", async (req, res) => {
