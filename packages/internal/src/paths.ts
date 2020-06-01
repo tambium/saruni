@@ -1,7 +1,7 @@
 import path from "path";
 import findUp from "findup-sync";
 
-const CONFIG_FILE_NAME = "saruni.yml";
+const CONFIG_FILE_NAME = "saruni.json";
 
 const PATH_API_DIR_DB = "packages/api/src/db";
 const PATH_API_DIR_FUNCTIONS = "packages/api/src/functions";
@@ -23,7 +23,7 @@ export const getConfigPath = (): string => {
   const configPath = findUp(CONFIG_FILE_NAME);
   if (!configPath) {
     throw new Error(
-      `Could not find a "${CONFIG_FILE_NAME}" file, are you sure you're in a Redwood project?`
+      `Could not find a "${CONFIG_FILE_NAME}" file, are you sure you're in a Saruni project?`
     );
   }
   return configPath;
