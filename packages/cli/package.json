@@ -1,6 +1,7 @@
 {
   "name": "@saruni/cli",
   "version": "0.0.1",
+  "license": "Apache-2.0",
   "bin": {
     "saruni": "./dist/index.js",
     "sr": "./dist/index.js"
@@ -34,5 +35,6 @@
     "findup-sync": "^4.0.0",
     "fs-extra": "^9.0.0",
     "yargs": "^15.3.1"
-  }
+  },
+  "gitHead": "a9c93f44fd21145fe749febd497816e46914d9d0"
 }
