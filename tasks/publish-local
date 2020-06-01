@@ -18,7 +18,7 @@ if [ -z "$1" ]
   then
   # Publish all the packages
   for d in packages/*/ ; do
-    ( cd "$d" && npm unpublish --tag dev --registry http://localhost:4873/ --force && npm publish --tag dev --registry http://localhost:4873/ --force )
+    ( cd "$d" && npm unpublish --tag dev --registry http://localhost:4873/ --force && yarn npm publish --tag dev )
   done
 else
   # Publish a single package

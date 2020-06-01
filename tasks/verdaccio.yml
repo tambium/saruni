@@ -22,7 +22,8 @@ packages:
   "@*/*":
     # scoped packages
     access: $all
-    publish: $authenticated
+    publish: $all
+    unpublish: $all
     proxy: npmjs
   "**":
     # allow all users (including non-authenticated users) to read and
@@ -31,6 +32,8 @@ packages:
     # you can specify usernames/groupnames (depending on your auth plugin)
     # and three keywords: "$all", "$anonymous", "$authenticated"
     access: $all
+    publish: $all
+    unpublish: $all
     proxy: npmjs
 
 # You can specify HTTP/1.1 server keep alive timeout in seconds for incoming connections.

@@ -4,10 +4,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "types": "dist/index.d.ts",
   "module": "src/index.ts",
   "main": "dist/index.js",
@@ -15,8 +11,7 @@
     "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist",
     "serve": "yarn node dist/index.js",
     "dev": "yarn build && yarn serve",
-    "build:watch": "nodemon --watch src --ext 'js,ts,tsx' --ignore dist --exec 'yarn dev'",
-    "publish": "yarn build && npm publish"
+    "build:watch": "nodemon --watch src --ext 'js,ts,tsx' --ignore dist --exec 'yarn dev'"
   },
   "dependencies": {
     "apollo-server-lambda": "^2.14.0"

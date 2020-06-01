@@ -5,11 +5,8 @@
   "workspaces": [
     "packages/*"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "publish": "yarn workspaces foreach -pt npm publish"
+    "publish": "yarn workspaces foreach -pt --exclude saruni npm publish"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
