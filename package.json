@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "publish": "yarn workspaces foreach -pt --exclude saruni npm publish"
+    "release": "lerna publish from-package"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
@@ -14,6 +14,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
+    "lerna": "^3.20.2",
     "typescript": "^3.9.3"
   }
 }

@@ -1,5 +1,6 @@
 {
   "name": "@saruni/dev-server",
+  "version": "0.0.1",
   "files": [
     "dist"
   ],
@@ -8,7 +9,6 @@
   },
   "types": "dist/index.d.ts",
   "module": "src/index.ts",
-  "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist --plugins @babel/plugin-transform-modules-commonjs",
@@ -32,7 +32,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.10.1",
     "@babel/register": "^7.9.0",
-    "@saruni/internal": "workspace:packages/internal",
+    "@saruni/internal": "^0.0.1",
     "body-parser": "^1.19.0",
     "chokidar": "^3.4.0",
     "express": "^4.17.1",

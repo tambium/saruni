@@ -25,3 +25,6 @@ yarn-error.log*
 
 # verdaccio
 tasks/.verdaccio
+
+# lerna
+lerna-debug.log
