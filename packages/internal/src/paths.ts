@@ -2,6 +2,7 @@ import path from "path";
 import findUp from "findup-sync";
 
 const CONFIG_FILE_NAME = "saruni.json";
+const DOT_ENV = ".env";
 
 const PATH_API_DIR_DB = "packages/api/src/db";
 const PATH_API_DIR_FUNCTIONS = "packages/api/src/functions";
@@ -42,6 +43,7 @@ export const getBaseDir = (configPath: string = getConfigPath()): string => {
 export const getPaths = (BASE_DIR: string = getBaseDir()) => {
   return {
     base: BASE_DIR,
+    env: path.join(BASE_DIR, DOT_ENV),
     api: {
       base: path.join(BASE_DIR, "packages/api"),
       db: path.join(BASE_DIR, PATH_API_DIR_DB),
