@@ -1,0 +1,11 @@
+{
+  "name": "@saruni/auth",
+  "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "module": "src/index.ts",
+  "main": "dist/index.js",
+  "scripts": {}
+}
