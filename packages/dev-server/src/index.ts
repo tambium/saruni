@@ -12,7 +12,7 @@ import requireDir from "require-dir";
 
 import { getPaths } from "@saruni/internal";
 
-const CORS_SAFE_LIST = ["http://localhost:8000"];
+const CORS_SAFE_LIST = ["http://localhost:8000", "http://localhost:4000"];
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, ".babelrc.js"),
