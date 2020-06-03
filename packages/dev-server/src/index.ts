@@ -4,12 +4,15 @@ import type { Request, Response } from "express";
 import babelRequireHook from "@babel/register";
 import bodyParser from "body-parser";
 import chokidar from "chokidar";
+import cors from "cors";
 import express from "express";
 import path from "path";
 import qs from "qs";
 import requireDir from "require-dir";
 
 import { getPaths } from "@saruni/internal";
+
+const CORS_SAFE_LIST = ["http://localhost:8000"];
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, ".babelrc.js"),
@@ -84,7 +87,21 @@ app.use(
     type: ["text/*", "application/json", "multipart/form-data"],
   })
 );
+
 app.use(bodyParser.raw({ type: "*/*" }));
+
+app.use(
+  cors({
+    credentials: true,
+    origin: (origin, callback) => {
+      if (CORS_SAFE_LIST.indexOf(origin!) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS."));
+      }
+    },
+  })
+);
 
 const apiWatcher = chokidar.watch(getPaths().api.base);
 
@@ -125,7 +142,7 @@ apiWatcher.on("ready", () => {
   });
 });
 
-app.all("/", (_, res) => {
+app.get("/", (_, res) => {
   res.send(`
   <html>
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
