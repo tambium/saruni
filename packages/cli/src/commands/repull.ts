@@ -49,12 +49,11 @@ export const handler = async () => {
             {
               title: "worktree",
               task: async () => {
-                await execa("yarn", [
-                  "-W",
-                  "remove",
-                  "@saruni/cli",
-                  "@saruni/dev-server",
-                ]);
+                await execa(
+                  "yarn",
+                  ["-W", "remove", "@saruni/cli", "@saruni/dev-server"],
+                  { cwd: getPaths().base }
+                );
               },
             },
           ]),
@@ -74,12 +73,11 @@ export const handler = async () => {
             {
               title: "worktree",
               task: async () => {
-                await execa("yarn", [
-                  "-W",
-                  "add",
-                  "@saruni/cli",
-                  "@saruni/dev-server",
-                ]);
+                await execa(
+                  "yarn",
+                  ["-W", "add", "@saruni/cli", "@saruni/dev-server"],
+                  { cwd: getPaths().base }
+                );
               },
             },
           ]),
