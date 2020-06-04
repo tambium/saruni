@@ -1,6 +1,6 @@
 {
   "name": "@saruni/dev-server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "files": [
     "dist"
   ],
@@ -37,7 +37,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.10.1",
     "@babel/register": "^7.9.0",
-    "@saruni/internal": "^0.0.2",
+    "@saruni/internal": "^0.0.3",
     "body-parser": "^1.19.0",
     "chokidar": "^3.4.0",
     "cors": "^2.8.5",
