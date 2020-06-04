@@ -5,6 +5,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "rm -rf dist && babel --extensions \".js,.ts\" src --out-dir dist",
     "serve": "node dist/create-saruni-app.js",
@@ -25,5 +28,6 @@
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0"
-  }
+  },
+  "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
 }

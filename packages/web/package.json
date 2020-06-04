@@ -1,4 +1,8 @@
 {
   "name": "@saruni/web",
-  "version": "0.0.2"
+  "version": "0.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
 }

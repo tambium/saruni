@@ -7,6 +7,9 @@
   "bin": {
     "ds": "./dist/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "types": "dist/index.d.ts",
   "module": "src/index.ts",
   "main": "dist/index.js",
@@ -39,5 +42,6 @@
     "nodemon": "^2.0.4",
     "qs": "^6.9.4",
     "require-dir": "^1.2.0"
-  }
+  },
+  "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
 }
