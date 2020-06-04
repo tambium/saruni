@@ -17,13 +17,11 @@
     "build:watch": "nodemon --watch src --ext 'js,ts,tsx' --ignore dist --exec 'yarn dev'"
   },
   "dependencies": {
-    "apollo-server-lambda": "^2.14.0",
-    "cors": "^2.8.5"
+    "apollo-server-lambda": "^2.14.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
-    "@babel/core": "^7.10.1",
-    "@types/cors": "^2.8.6"
+    "@babel/core": "^7.10.1"
   },
   "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
 }
