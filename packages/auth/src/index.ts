@@ -1,3 +1,4 @@
-import { withAuthentication } from "./api";
+import { withAuthentication } from "./api/utils";
+import { createCookieHandler } from "./api/functions";
 
-export { withAuthentication };
+export { createCookieHandler, withAuthentication };
