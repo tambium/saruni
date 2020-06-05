@@ -49,5 +49,11 @@ const handler = async (event: APIGatewayEvent) => {
 };
 
 export const createCookieHandler = () => {
+  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error(
+      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+    );
+  }
+
   return handler;
 };
