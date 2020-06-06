@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import Listr from "listr";
 import path from "path";
 
-import { getPaths } from "@saruni/internal";
+import { getPaths, getSaruniPackages } from "@saruni/internal";
 
 export const command = "repull";
 
@@ -12,6 +12,8 @@ export const desc =
 
 export const handler = async () => {
   try {
+    const { api, root, web } = await getSaruniPackages();
+
     await new Listr([
       {
         title: `Checking if ".yarnrc" is present`,
@@ -39,21 +41,30 @@ export const handler = async () => {
         task: async () =>
           new Listr([
             {
-              title: "worktree/package/api",
+              title: "worktree/packages/api",
               task: async () => {
-                await execa("yarn", ["remove", "@saruni/api"], {
-                  cwd: getPaths().api.base,
-                });
+                if (api.length > 0)
+                  await execa("yarn", ["remove", ...api], {
+                    cwd: getPaths().api.base,
+                  });
               },
             },
             {
-              title: "worktree",
+              title: "worktree/packages/web",
               task: async () => {
-                await execa(
-                  "yarn",
-                  ["-W", "remove", "@saruni/cli", "@saruni/dev-server"],
-                  { cwd: getPaths().base }
-                );
+                if (web.length > 0)
+                  await execa("yarn", ["remove", ...web], {
+                    cwd: getPaths().web.base,
+                  });
+              },
+            },
+            {
+              title: "worktree/root",
+              task: async () => {
+                if (root.length > 0)
+                  await execa("yarn", ["-W", "remove", ...root], {
+                    cwd: getPaths().base,
+                  });
               },
             },
           ]),
@@ -63,21 +74,30 @@ export const handler = async () => {
         task: async () =>
           new Listr([
             {
-              title: "worktree/package/api",
+              title: "worktree/packages/api",
               task: async () => {
-                await execa("yarn", ["add", "@saruni/api"], {
-                  cwd: getPaths().api.base,
-                });
+                if (api.length > 0)
+                  await execa("yarn", ["add", ...api], {
+                    cwd: getPaths().api.base,
+                  });
               },
             },
             {
-              title: "worktree",
+              title: "worktree/packages/web",
               task: async () => {
-                await execa(
-                  "yarn",
-                  ["-W", "add", "@saruni/cli", "@saruni/dev-server"],
-                  { cwd: getPaths().base }
-                );
+                if (web.length > 0)
+                  await execa("yarn", ["add", ...web], {
+                    cwd: getPaths().web.base,
+                  });
+              },
+            },
+            {
+              title: "worktree/root",
+              task: async () => {
+                if (root.length > 0)
+                  await execa("yarn", ["-W", "add", ...root], {
+                    cwd: getPaths().base,
+                  });
               },
             },
           ]),
