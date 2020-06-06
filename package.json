@@ -9,7 +9,7 @@
     "build": "lerna run build --npm-client=yarn",
     "verdaccio:up": "rm -rf ./tasks/.verdaccio && ./tasks/run-local-npm",
     "verdaccio:publish": "yarn build && ./tasks/publish-local",
-    "release": "lerna publish from-package",
+    "release": "yarn build && lerna publish from-package",
     "version:patch": "lerna version patch"
   },
   "devDependencies": {
