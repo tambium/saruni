@@ -58,7 +58,7 @@ const refreshLink = setContext(async (_request, { headers }) => {
 
   if (isTokenInvalid) {
     try {
-      const result = await fetch(getAddress("refreshToken"), {
+      const result = await fetch(getAddress("refresh_token"), {
         credentials: "include",
       });
 
@@ -122,14 +122,14 @@ export const useAuth = () => {
     `
   );
 
-  return [
-    async () => {
+  return {
+    login: async () => {
       try {
         const result = await handler();
 
         setAccessToken(result.data.login);
 
-        await fetch(getAddress("cookieHandler"), {
+        await fetch(getAddress("cookie_manager"), {
           method: "PUT",
           credentials: "include",
           headers: {
@@ -140,10 +140,25 @@ export const useAuth = () => {
         throw e;
       }
     },
-  ];
+    logout: async () => {
+      try {
+        await fetch(getAddress("cookie_manager"), {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            authentication: `bearer ${getAccessToken()}`,
+          },
+        });
+
+        setAccessToken(undefined);
+      } catch (e) {
+        throw e;
+      }
+    },
+  };
 };
 
-export const Apollo: React.FC = (props) => {
+export const ApiProvider: React.FC = (props) => {
   return (
     <ApolloProvider client={client}>
       <Auth>{props.children} </Auth>

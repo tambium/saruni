@@ -1,7 +1,12 @@
-import { withAuthentication } from "./api/utils";
+import { createAccessToken, withAuthentication } from "./api/utils";
 import {
   createCookieHandler,
   createRefreshTokenHandler,
 } from "./api/functions";
 
-export { createCookieHandler, createRefreshTokenHandler, withAuthentication };
+export {
+  createAccessToken,
+  createCookieHandler,
+  createRefreshTokenHandler,
+  withAuthentication,
+};
