@@ -1,6 +1,7 @@
 {
   "include": ["./src"],
   "compilerOptions": {
+    "jsx": "react",
     "declaration": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
