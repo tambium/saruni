@@ -1,10 +1,13 @@
 {
-  "include": ["./src"],
+  "include": ["./src/api", "./src/strategies"],
+  "exclude": ["./src/web"],
   "compilerOptions": {
-    "jsx": "react",
     "declaration": true,
-    "esModuleInterop": true,
+    "outDir": "./dist/module",
+    "target": "ES3",
     "moduleResolution": "node",
-    "outDir": "./dist"
+    "module": "CommonJS",
+    "sourceMap": true,
+    "esModuleInterop": true
   }
 }

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["./src/api", "./src/strategies"],
+  "include": ["./src/web"],
+  "compilerOptions": {
+    "jsx": "react",
+    "outDir": "./dist/browser"
+  }
+}

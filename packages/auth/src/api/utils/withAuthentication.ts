@@ -1,4 +1,4 @@
-import { jsonwebtokenStrategy } from "../../strategies";
+import { jsonwebtokenStrategy } from "../strategies";
 
 // add the option for devs to provide their own strategy
 export const withAuthentication = (resolver) => (

@@ -4,6 +4,8 @@ import {
   createRefreshTokenHandler,
 } from "./api/functions";
 
+export * from "./web";
+
 export {
   createAccessToken,
   createCookieHandler,
