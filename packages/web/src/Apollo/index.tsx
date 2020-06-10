@@ -16,11 +16,15 @@ const getAddress = (name: string) => {
   return `${uri}/${name}`;
 };
 
-export const generateApiProvider = ({
-  apolloClientOptions,
-}: {
-  apolloClientOptions?: ApolloClientOptions<NormalizedCacheObject>;
-}) => {
+interface GenerateApiProviderOptions {
+  apolloClientOptions?: Partial<ApolloClientOptions<NormalizedCacheObject>>;
+}
+
+export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
+  const { apolloClientOptions } = options ?? {};
+
+  let client: ApolloClient<NormalizedCacheObject>;
+
   const httpLink = new HttpLink({
     uri: getAddress("graphql"),
     credentials: "include",
@@ -31,15 +35,23 @@ export const generateApiProvider = ({
     console.log(networkError);
   });
 
-  const client = new ApolloClient({
-    ssrMode: false,
-    link: ApolloLink.from([
-      apolloClientOptions.link,
-      ApolloLink.from([errorLink, httpLink]),
-    ]),
-    cache: new InMemoryCache(),
-    ...apolloClientOptions,
-  });
+  if (apolloClientOptions) {
+    client = new ApolloClient({
+      ssrMode: false,
+      link: ApolloLink.from([
+        apolloClientOptions.link,
+        ApolloLink.from([errorLink, httpLink]),
+      ]),
+      cache: new InMemoryCache(),
+      ...apolloClientOptions,
+    });
+  } else {
+    client = new ApolloClient({
+      ssrMode: false,
+      link: ApolloLink.from([ApolloLink.from([errorLink, httpLink])]),
+      cache: new InMemoryCache(),
+    });
+  }
 
   const ApiProvider: React.FC = (props) => {
     return <ApolloProvider client={client}>{props.children}</ApolloProvider>;
