@@ -1,7 +1,7 @@
 {
-  "include": ["./src/api", "./src/strategies"],
-  "exclude": ["./src/web"],
+  "include": ["./src"],
   "compilerOptions": {
+    "jsx": "react",
     "declaration": true,
     "outDir": "./dist/module",
     "target": "ES3",
