@@ -9,6 +9,7 @@ import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
+import fetch from "isomorphic-unfetch";
 
 // TODO: add next/router here
 // import { useRouter } from "next/router";
@@ -86,6 +87,7 @@ export const authLink = setContext(async (_request, { headers }) => {
 const httpLink = new HttpLink({
   uri: getAddress("graphql"),
   credentials: "include",
+  fetch,
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
