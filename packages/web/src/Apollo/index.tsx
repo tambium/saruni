@@ -6,6 +6,7 @@ import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
+import { AppProps } from "next/app";
 
 const getAddress = (name: string) => {
   const uri =
@@ -20,18 +21,8 @@ interface GenerateApiProviderOptions {
   apolloClient?: ApolloClient<NormalizedCacheObject>;
 }
 
-export const withSaruni = (Comp: React.FC) => {
-  let App: React.FC;
-
-  if (typeof window === "undefined") {
-    App = () => {
-      return null;
-    };
-  } else {
-    App = Comp;
-  }
-
-  return App;
+export const withSaruni = (Comp: React.FC<AppProps>) => {
+  return Comp;
 };
 
 export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
