@@ -12,7 +12,7 @@ import { onError } from "apollo-link-error";
 import fetch from "isomorphic-unfetch";
 
 // TODO: add next/router here
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 const isServer = () => typeof window === "undefined";
 
@@ -95,14 +95,14 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   console.log(networkError);
 });
 
-const AuthContext = React.createContext(null);
+const AuthContext = React.createContext({});
 
 export const Auth: React.FC = (props) => {
   // TODO: use real data to decide auth state
   const authResult = {};
 
   return (
-    <AuthContext.Provider value={authResult}>
+    <AuthContext.Provider value={{ authQuery: {} }}>
       {props.children}
     </AuthContext.Provider>
   );
@@ -161,15 +161,25 @@ export const useAuth = () => {
   };
 };
 
-export const privateRoute = (Comp, options: { redirectTo: string }) => {
+export const privateRoute = (
+  Comp: React.FC,
+  options: { redirectTo: string }
+) => {
   const PrivateRouteComponent: React.FC = (props) => {
-    // const router = useRouter();
+    const router = useRouter();
 
-    const [{ data, error, loading }, isAuth] = React.useContext(AuthContext);
+    const authContext = React.useContext(AuthContext);
+
+    // @ts-ignore
+    const data = authContext?.authQuery?.data;
+    // @ts-ignore
+    const error = authContext?.authQuery?.error;
+    // @ts-ignore
+    const loading = authContext?.authQuery?.loading;
 
     React.useEffect(() => {
       if (!data?.user && options.redirectTo && !loading) {
-        // router.replace(options.redirectTo);
+        router.replace(options.redirectTo);
       }
     }, [loading]);
 
