@@ -20,10 +20,12 @@
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-error": "^1.1.13",
-    "apollo-link-http": "^1.5.17"
+    "apollo-link-http": "^1.5.17",
+    "graphql": "^15.1.0",
+    "graphql-tag": "^2.10.3"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
+    "react": ">=16.13.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.35"

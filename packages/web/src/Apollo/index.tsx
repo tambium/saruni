@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { ApolloProvider } from "@apollo/react-hooks";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
-import { ApolloClient, ApolloClientOptions } from "apollo-client";
+import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
@@ -17,11 +17,25 @@ const getAddress = (name: string) => {
 };
 
 interface GenerateApiProviderOptions {
-  apolloClientOptions?: Partial<ApolloClientOptions<NormalizedCacheObject>>;
+  apolloClient?: ApolloClient<NormalizedCacheObject>;
 }
 
+export const withSaruni = (Comp: React.FC) => {
+  let App: React.FC;
+
+  if (typeof window === "undefined") {
+    App = () => {
+      return null;
+    };
+  } else {
+    App = Comp;
+  }
+
+  return App;
+};
+
 export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
-  const { apolloClientOptions } = options ?? {};
+  const { apolloClient } = options ?? {};
 
   let client: ApolloClient<NormalizedCacheObject>;
 
@@ -35,26 +49,18 @@ export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
     console.log(networkError);
   });
 
-  if (apolloClientOptions) {
-    client = new ApolloClient({
-      ssrMode: false,
-      link: ApolloLink.from([
-        apolloClientOptions.link,
-        ApolloLink.from([errorLink, httpLink]),
-      ]),
-      cache: new InMemoryCache(),
-      ...apolloClientOptions,
-    });
-  } else {
-    client = new ApolloClient({
-      ssrMode: false,
-      link: ApolloLink.from([ApolloLink.from([errorLink, httpLink])]),
-      cache: new InMemoryCache(),
-    });
-  }
+  client = new ApolloClient({
+    ssrMode: false,
+    link: ApolloLink.from([ApolloLink.from([errorLink, httpLink])]),
+    cache: new InMemoryCache(),
+  });
 
   const ApiProvider: React.FC = (props) => {
-    return <ApolloProvider client={client}>{props.children}</ApolloProvider>;
+    return (
+      <ApolloProvider client={apolloClient || client}>
+        {props.children}
+      </ApolloProvider>
+    );
   };
 
   return ApiProvider;

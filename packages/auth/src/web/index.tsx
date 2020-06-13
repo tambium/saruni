@@ -1,10 +1,15 @@
 import * as React from "react";
 
 import { useMutation, MutationOptions } from "@apollo/react-hooks";
-import { ApolloLink } from "apollo-link";
 import { setContext } from "apollo-link-context";
 import gql from "graphql-tag";
 import jwtDecode from "jwt-decode";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloClient } from "apollo-client";
+import { ApolloLink } from "apollo-link";
+import { HttpLink } from "apollo-link-http";
+import { onError } from "apollo-link-error";
+
 // TODO: add next/router here
 // import { useRouter } from "next/router";
 
@@ -31,7 +36,7 @@ const getAddress = (name: string) => {
   return `${uri}/${name}`;
 };
 
-const refreshLink = setContext(async (_request, { headers }) => {
+export const refreshLink = setContext(async (_request, { headers }) => {
   const token = getAccessToken();
 
   let isTokenValid = false;
@@ -63,7 +68,7 @@ const refreshLink = setContext(async (_request, { headers }) => {
   };
 });
 
-const authLink = setContext(async (_request, { headers }) => {
+export const authLink = setContext(async (_request, { headers }) => {
   const token = getAccessToken();
 
   if (token) {
@@ -78,7 +83,15 @@ const authLink = setContext(async (_request, { headers }) => {
   return {};
 });
 
-export const jwtLinks = ApolloLink.from([refreshLink, authLink]);
+const httpLink = new HttpLink({
+  uri: getAddress("graphql"),
+  credentials: "include",
+});
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  console.log(graphQLErrors);
+  console.log(networkError);
+});
 
 const AuthContext = React.createContext(null);
 
@@ -93,6 +106,14 @@ export const Auth: React.FC = (props) => {
   );
 };
 
+export const jwtClient = new ApolloClient({
+  ssrMode: false,
+  link: ApolloLink.from([
+    ApolloLink.from([refreshLink, authLink, errorLink, httpLink]),
+  ]),
+  cache: new InMemoryCache(),
+});
+
 export const useAuth = () => {
   const [handler] = useMutation(
     gql`
@@ -103,7 +124,7 @@ export const useAuth = () => {
   );
 
   return {
-    login: async (options: MutationOptions) => {
+    login: async (options?: MutationOptions) => {
       try {
         const result = await handler(options);
 

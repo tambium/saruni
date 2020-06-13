@@ -7,16 +7,24 @@
   "publishConfig": {
     "access": "public"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "module": "src/index.ts",
-  "main": "dist/index.js",
+  "main": "dist/module/index.js",
+  "browser": "dist/browser/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc && tsc --p tsconfig.browser.json && tsc --p tsconfig.types.json"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.5",
     "@saruni/internal": "^0.0.3",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
     "apollo-link-context": "^1.0.20",
+    "apollo-link-error": "^1.1.13",
+    "apollo-link-http": "^1.5.17",
     "cookie": "^0.4.1",
+    "graphql": "^15.1.0",
+    "graphql-tag": "^2.10.3",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0"
   },
@@ -26,5 +34,8 @@
     "@types/jwt-decode": "^2.2.1",
     "aws-lambda": "^1.0.6"
   },
-  "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
+  "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b",
+  "peerDependencies": {
+    "react": ">=16.13.0"
+  }
 }
