@@ -21,7 +21,7 @@ interface GenerateApiProviderOptions {
   apolloClient?: ApolloClient<NormalizedCacheObject>;
 }
 
-export const withSaruni = (Comp: React.FC<AppProps>) => {
+export const withSaruni = (Comp: React.FC<AppProps>): React.FC => {
   return Comp;
 };
 
