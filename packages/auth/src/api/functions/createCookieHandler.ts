@@ -2,11 +2,6 @@ import type { APIGatewayEvent } from "aws-lambda";
 import { sign, verify } from "jsonwebtoken";
 import { AuthenticationError } from "@saruni/internal";
 
-const domain =
-  process.env.NODE_ENV === "production"
-    ? process.env.API_URL
-    : "http://localhost:4000";
-
 const createCookie = (
   name: string,
   value: string,
@@ -14,7 +9,9 @@ const createCookie = (
   expires?: string
 ) =>
   `${name}=${value}; HttpOnly;${
-    true ? `Domain=${domain}; Secure;` : ""
+    process.env.NODE_ENV === "production"
+      ? `Domain=${process.env.API_URL}; Secure;`
+      : ""
   } SameSite=Lax; Max-Age=${age}; ${expires ? `Expires: ${expires};` : ""}`;
 
 const handler = async (event: APIGatewayEvent) => {
@@ -34,13 +31,21 @@ const handler = async (event: APIGatewayEvent) => {
     }
 
     if (httpMethod === "POST" || httpMethod === "PUT") {
+      const { exp, iat, ...rest } = payload;
+
       return {
         statusCode: 204,
         body: null,
         headers: {
           "Set-Cookie": createCookie(
             "jid",
-            sign(payload, process.env.REFRESH_TOKEN_SECRET)
+            sign(
+              {
+                ...rest,
+                exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
+              },
+              process.env.REFRESH_TOKEN_SECRET
+            )
           ),
         },
       };

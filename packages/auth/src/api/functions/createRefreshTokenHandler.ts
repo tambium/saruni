@@ -19,9 +19,16 @@ const handler = async (event: APIGatewayEvent) => {
       throw new AuthenticationError();
     }
 
+    const { exp, iat, ...rest } = payload;
+
     return {
       statusCode: 200,
-      body: sign(payload, process.env.ACCESS_TOKEN_SECRET),
+      body: JSON.stringify({
+        jwt: sign(
+          { ...rest, exp: Math.floor(Date.now() / 1000) + 60 * 10 },
+          process.env.ACCESS_TOKEN_SECRET
+        ),
+      }),
     };
   } catch (e) {
     if (e.message.includes("Not authenticated")) {

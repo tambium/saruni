@@ -10,7 +10,7 @@ export const handler = async () => {
       command: "yarn ds",
     },
     {
-      command: "cd packages/web && gatsby develop",
+      command: "cd packages/web && yarn dev",
     },
   ]);
 };

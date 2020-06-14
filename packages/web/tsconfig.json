@@ -3,11 +3,8 @@
   "compilerOptions": {
     "jsx": "react",
     "declaration": true,
-    "outDir": "./dist/module",
-    "target": "ES3",
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "module": "CommonJS",
-    "sourceMap": true,
-    "esModuleInterop": true
+    "outDir": "./dist"
   }
 }
