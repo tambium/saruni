@@ -24,12 +24,15 @@
     "apollo-link-http": "^1.5.17",
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
-    "next": "^9.4.4"
+    "next": "^9.4.4",
+    "react-hook-form": "^5.7.2",
+    "yup": "^0.29.1"
   },
   "peerDependencies": {
     "react": ">=16.13.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.35"
+    "@types/react": "^16.9.35",
+    "@types/yup": "^0.29.3"
   }
 }

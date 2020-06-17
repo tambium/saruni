@@ -11,7 +11,6 @@ import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import fetch from "isomorphic-unfetch";
 
-// TODO: add next/router here
 import { useRouter } from "next/router";
 
 const isServer = () => typeof window === "undefined";
@@ -20,11 +19,12 @@ const isDev = () => process.env.NODE_ENV !== "production";
 
 let accessToken: string | undefined = undefined;
 
-const getAccessToken = () => {
+// TODO: temp solution
+export const getAccessToken = () => {
   return accessToken;
 };
 
-const setAccessToken = (token: string | undefined) => {
+export const setAccessToken = (token: string | undefined) => {
   accessToken = token;
 };
 
