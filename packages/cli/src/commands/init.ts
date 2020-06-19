@@ -42,32 +42,30 @@ const getServerlessResources = async (flavour = "jwt") => {
 
   await downloadFile(url, tmpDownloadPath);
 
-  await fs.ensureDir(path.resolve(getPaths().base, "/tmp"));
+  await fs.ensureDir(path.resolve(getPaths().base, "tmp"));
 
   await fs.ensureDir(getPaths().sls.resources.base);
 
-  await decompress(tmpDownloadPath, path.resolve(getPaths().base, "/tmp"), {
+  await decompress(tmpDownloadPath, path.resolve(getPaths().base, "tmp"), {
     strip: 1,
   });
 
   await fs.copy(
-    path.resolve(getPaths().base, "/tmp", `/${flavour}/resources`),
+    path.resolve(getPaths().base, "tmp", `${flavour}/resource`),
     getPaths().sls.resources.base
   );
 
   await fs.copy(
-    path.resolve(getPaths().base, "/tmp", `/${flavour}/serverless.yml`),
+    path.resolve(getPaths().base, "tmp", `${flavour}/serverless.yml`),
     getPaths().sls.yml
   );
 
   await fs.copy(
-    path.resolve(getPaths().base, "/tmp", `/${flavour}/webpack.config.js`),
-    getPaths().api.base
+    path.resolve(getPaths().base, "tmp", `${flavour}/webpack.config.js`),
+    path.resolve(getPaths().api.base, "webpack.config.js")
   );
 
-  await fs.remove(
-    path.resolve(getPaths().base, "/tmp", `/${flavour}/resources`)
-  );
+  await fs.remove(path.resolve(getPaths().base, "tmp", `${flavour}/resource`));
 };
 
 export const handler = async () => {
@@ -75,6 +73,12 @@ export const handler = async () => {
     await new Listr([
       // {
       //   title: `Init git repo`,
+      //   task: async () => {
+      //     await execa("git", ["init"]);
+      //   },
+      // },
+      // {
+      //   title: `create .env`,
       //   task: async () => {
       //     await execa("git", ["init"]);
       //   },
@@ -100,6 +104,10 @@ export const handler = async () => {
                   ],
                   { cwd: getPaths().base }
                 );
+
+                await execa("yarn", ["add", "-D", "babel-loader"], {
+                  cwd: getPaths().api.base,
+                });
               },
             },
           ]);
