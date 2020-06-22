@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import { useMutation, MutationOptions } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/react-hooks";
 import { setContext } from "apollo-link-context";
-import gql from "graphql-tag";
 import jwtDecode from "jwt-decode";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloClient } from "apollo-client";
@@ -10,6 +9,10 @@ import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import fetch from "isomorphic-unfetch";
+
+const getAPIEndpoint = (resource: string) => {
+  return `http://localhost:4000/${resource}`;
+};
 
 import { useRouter } from "next/router";
 
@@ -24,17 +27,12 @@ export const getAccessToken = () => {
   return accessToken;
 };
 
-export const setAccessToken = (token: string | undefined) => {
+export const setAccessToken = (token: string) => {
   accessToken = token;
 };
 
-const getAddress = (name: string) => {
-  const uri =
-    process.env.NODE_ENV === "production"
-      ? process.env.API_URL
-      : "http://localhost:4000";
-
-  return `${uri}/${name}`;
+export const removeAccessToken = () => {
+  accessToken = undefined;
 };
 
 export const refreshLink = setContext(async (_request, { headers }) => {
@@ -52,7 +50,7 @@ export const refreshLink = setContext(async (_request, { headers }) => {
 
   if (!isTokenValid) {
     try {
-      const result = await fetch(getAddress("refresh_token"), {
+      const result = await fetch(getAPIEndpoint("refresh_token"), {
         credentials: "include",
       });
 
@@ -85,7 +83,7 @@ export const authLink = setContext(async (_request, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: getAddress("graphql"),
+  uri: getAPIEndpoint("graphql"),
   credentials: "include",
   fetch,
 });
@@ -95,17 +93,75 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   console.log(networkError);
 });
 
-const AuthContext = React.createContext({});
+export const AuthContext = React.createContext<{
+  isAuthenticated: boolean;
+  loading: boolean;
+  login: () => void | Promise<void>;
+  signup: () => void | Promise<void>;
+  logout: () => void | Promise<void>;
+}>({
+  isAuthenticated: false,
+  loading: false,
+  login: () => {},
+  signup: () => {},
+  logout: () => {},
+});
 
-export const Auth: React.FC = (props) => {
-  // TODO: use real data to decide auth state
-  const authResult = {};
+export const setToken = async (token) => {
+  try {
+    setAccessToken(token);
 
-  return (
-    <AuthContext.Provider value={{ authQuery: {} }}>
-      {props.children}
-    </AuthContext.Provider>
-  );
+    await fetch(getAPIEndpoint("cookie_manager"), {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        authentication: `bearer ${token}`,
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const removeToken = async () => {
+  try {
+    await fetch(getAPIEndpoint("cookie_manager"), {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        authentication: `bearer ${getAccessToken()}`,
+      },
+    });
+
+    removeAccessToken();
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const useJwtToken = () => {
+  const client = useApolloClient();
+
+  return {
+    setToken: async (token: string) => {
+      try {
+        await setToken(token);
+
+        await client.resetStore();
+      } catch (e) {
+        throw e;
+      }
+    },
+    removeToken: async () => {
+      try {
+        await removeToken();
+
+        await client.resetStore();
+      } catch (e) {
+        throw e;
+      }
+    },
+  };
 };
 
 export const jwtClient = new ApolloClient({
@@ -117,48 +173,7 @@ export const jwtClient = new ApolloClient({
 });
 
 export const useAuth = () => {
-  const [handler] = useMutation(
-    gql`
-      mutation {
-        login
-      }
-    `
-  );
-
-  return {
-    login: async (options?: MutationOptions) => {
-      try {
-        const result = await handler(options);
-
-        setAccessToken(result.data.login);
-
-        await fetch(getAddress("cookie_manager"), {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            authentication: `bearer ${result.data.login}`,
-          },
-        });
-      } catch (e) {
-        throw e;
-      }
-    },
-    logout: async () => {
-      try {
-        await fetch(getAddress("cookie_manager"), {
-          method: "DELETE",
-          credentials: "include",
-          headers: {
-            authentication: `bearer ${getAccessToken()}`,
-          },
-        });
-
-        setAccessToken(undefined);
-      } catch (e) {
-        throw e;
-      }
-    },
-  };
+  return React.useContext(AuthContext);
 };
 
 export const privateRoute = (
@@ -168,17 +183,10 @@ export const privateRoute = (
   const PrivateRouteComponent: React.FC = (props) => {
     const router = useRouter();
 
-    const authContext = React.useContext(AuthContext);
-
-    // @ts-ignore
-    const data = authContext?.authQuery?.data;
-    // @ts-ignore
-    const error = authContext?.authQuery?.error;
-    // @ts-ignore
-    const loading = authContext?.authQuery?.loading;
+    const { loading, isAuthenticated } = React.useContext(AuthContext);
 
     React.useEffect(() => {
-      if (!data?.user && options.redirectTo && !loading) {
+      if (!isAuthenticated && options.redirectTo && !loading) {
         router.replace(options.redirectTo);
       }
     }, [loading]);
@@ -187,9 +195,9 @@ export const privateRoute = (
       return null;
     }
 
-    if (loading || error) return null;
+    if (loading && !isAuthenticated) return null;
 
-    if (!data?.user && options.redirectTo) return null;
+    if (!isAuthenticated && options.redirectTo) return null;
 
     return <Comp {...props} />;
   };
