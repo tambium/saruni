@@ -5,7 +5,6 @@ import babelRequireHook from "@babel/register";
 import bodyParser from "body-parser";
 import chokidar from "chokidar";
 import cors from "cors";
-import execa from "execa";
 import express from "express";
 import path from "path";
 import qs from "qs";
@@ -104,7 +103,13 @@ app.use(
   })
 );
 
-const apiWatcher = chokidar.watch(getPaths().api.base);
+const WATCHER_IGNORE_EXTENSIONS = [".db", ".sqlite", "-journal"];
+
+const apiWatcher = chokidar.watch(getPaths().api.base, {
+  ignored: (file: string) =>
+    file.includes("node_modules") ||
+    WATCHER_IGNORE_EXTENSIONS.some((ext) => file.endsWith(ext)),
+});
 
 const importFreshFunctions = (functionsPath) => {
   Object.keys(require.cache).forEach((key) => {
@@ -118,7 +123,6 @@ const importFreshFunctions = (functionsPath) => {
 };
 
 let functions;
-let isCodegenRunning = false;
 
 functions = importFreshFunctions(path.resolve(getPaths().api.functions));
 
@@ -140,16 +144,6 @@ apiWatcher.on("ready", () => {
       console.log("Some file deleted. Rebuilding...");
       functions = importFreshFunctions(path.resolve(getPaths().api.functions));
       console.log("New functions deployed.");
-    }
-
-    if (!isCodegenRunning) {
-      try {
-        isCodegenRunning = true;
-        await execa("yarn", ["gen"], { cwd: getPaths().web.base });
-      } catch {
-      } finally {
-        isCodegenRunning = false;
-      }
     }
   });
 });
