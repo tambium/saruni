@@ -1981,6 +1981,45 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
+"@middy/core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@middy/core/-/core-1.0.0.tgz#81b158dd7e90f3bc33645f8627ad63433ce6ed9e"
+  integrity sha512-97niLTWQMK/zixQoFdkpVzskxkkj5r+TdYABOHFN1GittBcqVFZ/4dEKissmL1eQASIb/70RpHlbcDxWQfoPCA==
+  dependencies:
+    once "^1.4.0"
+
+"@middy/http-cors@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@middy/http-cors/-/http-cors-1.0.0.tgz#afaa94226c1c4de2328458dcba4ac297d87f7f87"
+  integrity sha512-TVxdtLRHoL/DIIk0c/cSEv1zkCD20NRNWF4mlv3XNeFm5dfBuMNOmHmbzaYl+oq91y7bl9Rpe454P+NCBBGniw==
+
+"@middy/http-error-handler@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@middy/http-error-handler/-/http-error-handler-1.0.0.tgz#da6d257cdc82672dfb14a7c024be22cbab663d31"
+  integrity sha512-A5JiN6h+OHeybadfbL06mMjwLblFs8TiJ8tafnDNp5i0f1W0mA/qRjun1UOOFq77Qnh0PtuiR/HUYzwAnLD0Ig==
+  dependencies:
+    http-errors "^1.6.3"
+
+"@middy/http-json-body-parser@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@middy/http-json-body-parser/-/http-json-body-parser-1.0.0.tgz#50c6e2c9541424f35d094ebcc5f944472bfecb20"
+  integrity sha512-Co3wFcHPSgDNxCMzpEolWF5qQ6K46aAjEFGGz/jUzs01HfapqwtU7AYXZTWp3j+rVwIE0Vg+QlT5Ir+eQCg5Ng==
+  dependencies:
+    "@types/http-errors" "^1.6.1"
+    content-type "^1.0.4"
+    http-errors "^1.6.3"
+
+"@middy/validator@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@middy/validator/-/validator-1.0.0.tgz#655ca23ac01b4c83bda8d44acec0ce5998993672"
+  integrity sha512-emG0+jS55L/dVd0oZmWfzBOf2hN0WJ2PJ/0b/ik5+wKM0u/I3+4dY/bYvgoEqcssosiMpsIB3/XBOsk1jR39og==
+  dependencies:
+    "@types/http-errors" "^1.6.1"
+    ajv "^6.5.0"
+    ajv-i18n "^3.3.0"
+    ajv-keywords "^3.2.0"
+    http-errors "^1.6.3"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -2362,6 +2401,11 @@
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
   integrity sha512-PGAK759pxyfXE78NbKxyfRcWYA/KwW17X290cNev/qAsn9eQIxkH4shoNBafH37wewhDG/0p1cHPbK6+SzZjWQ==
+
+"@types/http-errors@^1.6.1", "@types/http-errors@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.6.3.tgz#619a55768eab98299e8f76747339f3373f134e69"
+  integrity sha512-4KCE/agIcoQ9bIfa4sBxbZdnORzRjIw8JNQPLfqoNv7wQl/8f8mRbW68Q8wBsQFoJkPUHGlQYZ9sqi5WpfGSEQ==
 
 "@types/json-schema@^7.0.4":
   version "7.0.5"
@@ -2797,12 +2841,22 @@ ajv-errors@^1.0.0:
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
   integrity sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ==
 
+ajv-i18n@^3.3.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/ajv-i18n/-/ajv-i18n-3.5.0.tgz#63235ebc8779ac50cfa320aa123d93a0d6911b00"
+  integrity sha512-IR8uhRH0La4DweKHqBOVeoNo2prJ3bowWzGtNS3uDvYv5wKLgH/WQsoh6gHPVxTWXCGr+R+6I5vXDSXGAYnNPA==
+
 ajv-keywords@^3.1.0, ajv-keywords@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.4.1.tgz#ef916e271c64ac12171fd8384eaae6b2345854da"
   integrity sha512-RO1ibKvd27e6FEShVFfPALuHI3WjSVNeK5FIsmme/LYRNxjKuNj+Dt7bucLa6NdSv3JcVTyMlm9kGR84z1XpaQ==
 
-ajv@^6.1.0, ajv@^6.10.2, ajv@^6.12.0, ajv@^6.12.2, ajv@^6.5.5:
+ajv-keywords@^3.2.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.0.tgz#5c894537098785926d71e696114a53ce768ed773"
+  integrity sha512-eyoaac3btgU8eJlvh01En8OCKzRqlLe2G5jDsCr3RiE2uLGMEEB1aaGwVVpwR8M95956tGH6R+9edC++OvzaVw==
+
+ajv@^6.1.0, ajv@^6.10.2, ajv@^6.12.0, ajv@^6.12.2, ajv@^6.5.0, ajv@^6.5.5:
   version "6.12.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.2.tgz#c629c5eced17baf314437918d2da88c99d5958cd"
   integrity sha512-k+V+hzjm5q/Mr8ef/1Y9goCmlsK4I6Sm74teeyGvFk1XrOsbsKLjEdrvny42CZ+a8sXbk8KWpY/bDwS+FLL2UQ==
@@ -4284,7 +4338,7 @@ content-disposition@0.5.3:
   dependencies:
     safe-buffer "5.1.2"
 
-content-type@~1.0.4:
+content-type@^1.0.4, content-type@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
@@ -6296,7 +6350,7 @@ http-errors@1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-http-errors@^1.7.3, http-errors@~1.7.2:
+http-errors@^1.6.3, http-errors@^1.7.3, http-errors@~1.7.2:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.7.3.tgz#6c619e4f9c60308c38519498c14fbb10aacebb06"
   integrity sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw==

@@ -17,6 +17,11 @@
     "build:watch": "nodemon --watch src --ext 'js,ts,tsx' --ignore dist --exec 'yarn dev'"
   },
   "dependencies": {
+    "@middy/core": "^1.0.0",
+    "@middy/http-cors": "^1.0.0",
+    "@middy/http-error-handler": "^1.0.0",
+    "@middy/http-json-body-parser": "^1.0.0",
+    "@middy/validator": "^1.0.0",
     "apollo-server-lambda": "^2.14.0",
     "aws-lambda": "^1.0.6",
     "date-fns": "^2.14.0",
@@ -26,6 +31,7 @@
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.1",
+    "@types/http-errors": "^1.6.3",
     "@types/nodemailer": "^6.4.0",
     "@types/uuid": "^8.0.0"
   },
