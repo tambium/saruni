@@ -96,9 +96,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export const AuthContext = React.createContext<{
   isAuthenticated: boolean;
   loading: boolean;
-  login: () => void | Promise<void>;
-  signup: () => void | Promise<void>;
-  logout: () => void | Promise<void>;
+  login: (...args: any[]) => void | Promise<void>;
+  signup: (...args: any[]) => void | Promise<void>;
+  logout: (...args: any[]) => void | Promise<void>;
 }>({
   isAuthenticated: false,
   loading: false,
