@@ -150,16 +150,66 @@ apiWatcher.on("ready", () => {
 
 app.get("/", (_, res) => {
   res.send(`
-  <html>
-  <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
-    <div>the following functions are avaliable</div>
-    <ul>
-  ${Object.entries(functions).map(([key]) => {
-    return `<li><a href="/${key}">${key}</a></li>`;
-  })}
-    </ul>
-  </body>
-</html>
+  <html style="height: 100%; margin: 0; padding: 0;">
+    <body
+      style="
+        color: #e0e6eb;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+          Noto Sans, sans-serif, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        font-size: 16px;
+        height: 100%;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+      "
+    >
+      <div
+        style="
+          background-color: #1d1b1c;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          width: 100%;
+        "
+      >
+        <div style="flex-direction: row; margin: 24px;">
+          <span style="font-size: 21px; font-weight: 600;">Saruni</span>
+        </div>
+        <div
+          style="
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 16px;
+          "
+        >
+          <div
+            style="
+              background-color: #262425;
+              border-radius: 4px;
+              box-sizing: border-box;
+              max-width: 440px;
+              padding: 16px;
+              width: 100%;
+            "
+          >
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 16px;">
+              Function Reference
+            </div>
+            <ul style="margin: 0;">
+              ${Object.entries(functions).map(([key]) => {
+                return `<li><a href="/${key}" style="color: #e0e6eb; text-decoration: none;">${key}</a></li>`;
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
   `);
 });
 
