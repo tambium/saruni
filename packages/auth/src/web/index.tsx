@@ -204,3 +204,54 @@ export const privateRoute = (
 
   return PrivateRouteComponent;
 };
+
+export const useVerifyEmail = () => {
+  const router = useRouter();
+  const {
+    query: { token },
+  } = router;
+
+  const { isAuthenticated } = useAuth();
+
+  const [status, setStatus] = React.useState<string | undefined>(undefined);
+  const [error, setError] = React.useState<string | undefined>(undefined);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  const callback = React.useCallback(async () => {
+    if (!token || !isAuthenticated) return;
+
+    setLoading(true);
+
+    const firstToken: string = Array.isArray(token) ? token[0] : token;
+
+    try {
+      const fetchResult = await fetch("http://localhost:4000/verify_email", {
+        method: "PUT",
+        body: JSON.stringify({ token: firstToken }),
+        headers: {
+          authentication: "bearer " + getAccessToken(),
+        },
+      });
+
+      if (fetchResult.ok) {
+        setError(undefined);
+
+        setStatus("done");
+
+        setLoading(false);
+      } else {
+        throw new Error("Something went wrong");
+      }
+    } catch (e) {
+      setError(e.message);
+
+      setLoading(false);
+    }
+  }, [token, isAuthenticated]);
+
+  React.useEffect(() => {
+    callback();
+  }, [callback]);
+
+  return { verifyEmail: callback, status, error, loading };
+};
