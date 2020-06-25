@@ -85,10 +85,13 @@ const app = express();
 app.use(
   bodyParser.text({
     type: ["text/*", "application/json", "multipart/form-data"],
+    limit: "50mb",
   })
 );
 
-app.use(bodyParser.raw({ type: "*/*" }));
+app.use(bodyParser.json({ limit: "50mb" }));
+
+app.use(bodyParser.raw({ type: "*/*", limit: "50mb" }));
 
 app.use(
   cors({

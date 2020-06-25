@@ -96,10 +96,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export const AuthContext = React.createContext<{
   isAuthenticated: boolean;
   loading: boolean;
+  defaultRedirect: string;
   login: (...args: any[]) => void | Promise<void>;
   signup: (...args: any[]) => void | Promise<void>;
   logout: (...args: any[]) => void | Promise<void>;
 }>({
+  defaultRedirect: "/",
   isAuthenticated: false,
   loading: false,
   login: () => {},
