@@ -1,6 +1,10 @@
 import type { APIGatewayEvent } from "aws-lambda";
-import { sign, verify } from "jsonwebtoken";
-import { AuthenticationError } from "@saruni/internal";
+import { sign } from "jsonwebtoken";
+import middy from "@middy/core";
+import cors from "@middy/http-cors";
+import httpErrorHandler from "@middy/http-error-handler";
+
+import { jwtMiddleware } from "../utils";
 
 const createCookie = (
   name: string,
@@ -14,23 +18,17 @@ const createCookie = (
       : ""
   } SameSite=Lax; Max-Age=${age}; ${expires ? `Expires: ${expires};` : ""}`;
 
-const handler = async (event: APIGatewayEvent) => {
-  try {
-    const { headers, httpMethod } = event;
+export const createCookieHandler = () => {
+  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error(
+      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+    );
+  }
 
-    const header = headers["authentication"];
+  return middy(async (event: APIGatewayEvent, context) => {
+    let payload = context.payload;
 
-    const bearer = header?.split(" ")[1] || "";
-
-    let payload: any;
-
-    try {
-      payload = verify(bearer, process.env.ACCESS_TOKEN_SECRET);
-    } catch (e) {
-      throw new AuthenticationError();
-    }
-
-    if (httpMethod === "POST" || httpMethod === "PUT") {
+    if (event.httpMethod === "POST") {
       const { exp, iat, ...rest } = payload;
 
       return {
@@ -51,7 +49,7 @@ const handler = async (event: APIGatewayEvent) => {
       };
     }
 
-    if (httpMethod === "DELETE") {
+    if (event.httpMethod === "DELETE") {
       return {
         statusCode: 204,
         body: null,
@@ -60,27 +58,15 @@ const handler = async (event: APIGatewayEvent) => {
         },
       };
     }
-  } catch (e) {
-    if (e.message.includes("Not authenticated")) {
-      return {
-        statusCode: 401,
-        body: e.message,
-      };
-    }
-
-    return {
-      statusCode: 500,
-      body: "Something went wrong",
-    };
-  }
-};
-
-export const createCookieHandler = () => {
-  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
-    throw new Error(
-      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+  })
+    .use(jwtMiddleware())
+    .use(httpErrorHandler())
+    .use(
+      cors({
+        credentials: true,
+        headers:
+          "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent",
+        origin: "http://localhost:3000",
+      })
     );
-  }
-
-  return handler;
 };

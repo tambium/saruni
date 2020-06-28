@@ -1,10 +1,20 @@
 import type { APIGatewayEvent } from "aws-lambda";
 import cookie from "cookie";
+import createError from "http-errors";
 import { sign, verify } from "jsonwebtoken";
-import { AuthenticationError } from "@saruni/internal";
+import middy from "@middy/core";
+import cors from "@middy/http-cors";
+import httpErrorHandler from "@middy/http-error-handler";
+import validator from "@middy/validator";
 
-const handler = async (event: APIGatewayEvent) => {
-  try {
+export const createRefreshTokenHandler = () => {
+  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error(
+      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+    );
+  }
+
+  const handler = middy(async (event: APIGatewayEvent) => {
     let payload: any;
 
     try {
@@ -16,7 +26,7 @@ const handler = async (event: APIGatewayEvent) => {
 
       payload = verify(jid, process.env.REFRESH_TOKEN_SECRET);
     } catch (e) {
-      throw new AuthenticationError();
+      throw createError(401);
     }
 
     const { exp, iat, ...rest } = payload;
@@ -30,27 +40,25 @@ const handler = async (event: APIGatewayEvent) => {
         ),
       }),
     };
-  } catch (e) {
-    if (e.message.includes("Not authenticated")) {
-      return {
-        statusCode: 401,
-        body: e.message,
-      };
-    }
-
-    return {
-      statusCode: 500,
-      body: "Something went wrong",
-    };
-  }
-};
-
-export const createRefreshTokenHandler = () => {
-  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
-    throw new Error(
-      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+  })
+    .use(
+      validator({
+        outputSchema: {
+          required: ["jwt"],
+          type: "object",
+          properties: { jwt: { type: "string" } },
+        },
+      })
+    )
+    .use(httpErrorHandler())
+    .use(
+      cors({
+        credentials: true,
+        headers:
+          "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent",
+        origin: "http://localhost:3000",
+      })
     );
-  }
 
   return handler;
 };
