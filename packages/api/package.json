@@ -25,6 +25,7 @@
     "apollo-server-lambda": "^2.14.0",
     "aws-lambda": "^1.0.6",
     "date-fns": "^2.14.0",
+    "http-errors": "^1.7.3",
     "nodemailer": "^6.4.10",
     "uuid": "^8.1.0"
   },
@@ -34,6 +35,9 @@
     "@types/http-errors": "^1.6.3",
     "@types/nodemailer": "^6.4.0",
     "@types/uuid": "^8.0.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "gitHead": "046fe47d958dc1f468ef558ff224446f20601c7b"
 }
