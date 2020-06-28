@@ -5,6 +5,7 @@ import babelRequireHook from "@babel/register";
 import bodyParser from "body-parser";
 import chokidar from "chokidar";
 import cors from "cors";
+import execa from "execa";
 import express from "express";
 import path from "path";
 import qs from "qs";
@@ -107,6 +108,24 @@ app.use(
 );
 
 const WATCHER_IGNORE_EXTENSIONS = [".db", ".sqlite", "-journal"];
+
+const graphqlWatcher = chokidar.watch(getPaths().web.graphql);
+
+let isGeneratingGraphqlFiles = false;
+
+graphqlWatcher.on("ready", () => {
+  graphqlWatcher.on("change", async () => {
+    try {
+      if (!isGeneratingGraphqlFiles) {
+        isGeneratingGraphqlFiles = true;
+        await execa("yarn", ["gen"], { cwd: getPaths().web.base });
+      }
+    } catch {
+    } finally {
+      isGeneratingGraphqlFiles = false;
+    }
+  });
+});
 
 const apiWatcher = chokidar.watch(getPaths().api.base, {
   ignored: (file: string) =>

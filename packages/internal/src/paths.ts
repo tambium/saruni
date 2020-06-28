@@ -14,6 +14,7 @@ const PATH_API_DIR_PRISMA_SCHEMA = "packages/api/prisma/schema.prisma";
 const PATH_API_DIR_SERVICES = "packages/api/src/services";
 const PATH_API_DIR_SRC = "packages/api/src";
 const PATH_WEB_DIR_COMPONENTS = "packages/web/src/components";
+const PATH_WEB_DIR_GRAPHQL = "packages/web/src/graphql";
 const PATH_WEB_DIR_LAYOUTS = "packages/web/src/layouts";
 const PATH_WEB_DIR_PAGES = "packages/web/src/pages";
 const PATH_WEB_DIR_SRC = "packages/web/src";
@@ -78,6 +79,7 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
       base: path.join(BASE_DIR, "packages/web"),
       components: path.join(BASE_DIR, PATH_WEB_DIR_COMPONENTS),
       layouts: path.join(BASE_DIR, PATH_WEB_DIR_LAYOUTS),
+      graphql: path.join(BASE_DIR, PATH_WEB_DIR_GRAPHQL),
       pages: path.join(BASE_DIR, PATH_WEB_DIR_PAGES),
       src: path.join(BASE_DIR, PATH_WEB_DIR_SRC),
       views: path.join(BASE_DIR, PATH_WEB_DIR_VIEWS),
