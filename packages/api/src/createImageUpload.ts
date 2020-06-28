@@ -9,6 +9,13 @@ import { v4 as uuidV4 } from "uuid";
 
 import type { APIGatewayEvent } from "aws-lambda";
 
+import { baseOptions } from "./corsOptions";
+
+interface ImageUploadProperties {
+  auth?: any;
+  bucketName: string;
+}
+
 interface ImageUploadBody {
   body: { image: string; pathPrefix?: string };
 }
@@ -16,14 +23,15 @@ interface ImageUploadBody {
 type ImageUploadEvent = Omit<APIGatewayEvent, "body"> & ImageUploadBody;
 
 export const createImageUpload = ({
-  auth = {
-    before: (_, next) => {
-      next();
-    },
-  },
-}) => {
+  auth = {},
+  bucketName,
+}: ImageUploadProperties) => {
   return middy(async (event: ImageUploadEvent) => {
-    let path, contentType, body, extension, location;
+    let path: string,
+      contentType: string,
+      body: Buffer,
+      extension: string,
+      location: string;
 
     try {
       const { image, pathPrefix } = event.body;
@@ -50,7 +58,7 @@ export const createImageUpload = ({
       const uploadResult = await new AWS.S3.ManagedUpload({
         params: {
           Body: body,
-          Bucket: "imageuploaddevlam",
+          Bucket: bucketName,
           Key: path,
           ContentType: contentType,
           ContentEncoding: "base64",
@@ -61,6 +69,7 @@ export const createImageUpload = ({
     } catch {
       createError(500, "Could not upload image.");
     }
+
     return {
       statusCode: 201,
       body: JSON.stringify({ location }),
@@ -87,15 +96,14 @@ export const createImageUpload = ({
             },
           },
         },
+        outputSchema: {
+          required: ["location"],
+          type: "object",
+          properties: { location: { type: "string" } },
+        },
       })
     )
     .use(auth)
     .use(httpErrorHandler())
-    .use(
-      cors({
-        credentials: false,
-        headers: "Content-Type, Authentication",
-        origin: "*",
-      })
-    );
+    .use(cors(baseOptions));
 };
