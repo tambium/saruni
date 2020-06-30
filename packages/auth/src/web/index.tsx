@@ -11,6 +11,15 @@ import { onError } from "apollo-link-error";
 import fetch from "isomorphic-unfetch";
 
 const getAPIEndpoint = (resource: string) => {
+  if (
+    (process.env.NODE_ENV === "development" &&
+      process.env.NEXT_PUBLIC_USE_CLOUD === "true" &&
+      process.env.NEXT_PUBLIC_API_URL) ||
+    process.env.NODE_ENV === "production"
+  ) {
+    return `${process.env.API_URL}/${resource}`;
+  }
+
   return `http://localhost:4000/${resource}`;
 };
 
@@ -51,6 +60,7 @@ export const refreshLink = setContext(async (_request, { headers }) => {
   if (!isTokenValid) {
     try {
       const result = await fetch(getAPIEndpoint("refresh_token"), {
+        method: "POST",
         credentials: "include",
       });
 
@@ -180,7 +190,7 @@ export const useAuth = () => {
 
 export const privateRoute = (
   Comp: React.FC,
-  options: { redirectTo: string }
+  options?: { redirectTo?: string }
 ) => {
   const PrivateRouteComponent: React.FC = (props) => {
     const router = useRouter();
