@@ -17,7 +17,7 @@ const getAPIEndpoint = (resource: string) => {
       process.env.NEXT_PUBLIC_API_URL) ||
     process.env.NODE_ENV === "production"
   ) {
-    return `${process.env.API_URL}/${resource}`;
+    return `${process.env.NEXT_PUBLIC_API_URL}/${resource}`;
   }
 
   return `http://localhost:4000/${resource}`;
