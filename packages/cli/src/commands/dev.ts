@@ -1,11 +1,25 @@
 import concurrently from "concurrently";
+import { CommandBuilder } from "yargs";
 
-export const command = "dev";
+export const command = "dev <useCloud>";
 
 export const desc = "Start development servers.";
 
-export const handler = async () => {
-  await concurrently([
+export const builder: CommandBuilder = (yargs) => {
+  return yargs.option("cloud", { alias: "u", default: "false" });
+};
+
+export const handler = async (args: { cloud: boolean }) => {
+  console.log(args);
+  if (args.cloud) {
+    return await concurrently([
+      {
+        command: "cd packages/web && yarn dev:useCloud",
+      },
+    ]);
+  }
+
+  return await concurrently([
     {
       command: "yarn ds",
     },

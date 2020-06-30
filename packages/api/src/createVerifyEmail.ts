@@ -26,7 +26,8 @@ export const createVerifyEmail = ({ db }) => {
        * 2. user has already verified their email and the token has been
        * removed from EmailVerification
        */
-      throw new Error(
+      throw createError(
+        400,
         `Email could not be verified. Please request a new email.`
       );
     }
