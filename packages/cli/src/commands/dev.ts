@@ -1,12 +1,12 @@
 import concurrently from "concurrently";
 import { CommandBuilder } from "yargs";
 
-export const command = "dev <useCloud>";
+export const command = "dev";
 
 export const desc = "Start development servers.";
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option("cloud", { alias: "c", default: "false" });
+  return yargs.option("cloud", { alias: "c", default: false, type: "boolean" });
 };
 
 export const handler = async (args: { cloud: string; u: string }) => {
