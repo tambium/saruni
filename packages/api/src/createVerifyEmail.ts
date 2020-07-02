@@ -41,7 +41,9 @@ export const createVerifyEmail = ({ db }) => {
         data: { emailVerified: true },
       });
 
-      await db.emailVerification.delete({ where: { id: latest.userId } });
+      await db.emailVerification.deleteMany({
+        where: { userId: latest.userId },
+      });
     }
 
     return {

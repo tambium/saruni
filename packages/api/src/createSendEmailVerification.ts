@@ -27,66 +27,54 @@ export const createSendEmailVerification: CreateSendEmailVerification = ({
     );
   }
 
-  return middy(async (_event, context) => {
-    const token = uuidV4();
+  return (
+    middy(async (_event, context) => {
+      const token = uuidV4();
 
-    let result;
+      let result;
 
-    try {
-      result = await db.emailVerification.create({
-        data: {
-          expiresAt: add(new Date(), { weeks: 1 }),
-          token,
-          user: {
-            connect: {
-              // @ts-ignore
-              id: context.payload.userId,
-            },
-          },
-        },
-      });
-    } catch {
-      throw createError(500, "Something went wrong.");
-    }
-
-    try {
-      // TODO: extract this to a separete lambda?
-      sendMail(`http://localhost:3000/verify-email?token=${token}`);
-    } catch {
-      throw createError(500, "Could not send email.");
-    }
-
-    return {
-      statusCode: 201,
-      body: JSON.stringify({ emailVerification: result }),
-    };
-  })
-    .use(jsonBodyParser())
-    .use(
-      validator({
-        inputSchema: {
-          required: ["body"],
-          type: "object",
-          properties: {
-            body: {
-              type: "object",
-              required: ["token"],
-              properties: {
-                token: {
-                  type: "string",
-                },
+      try {
+        result = await db.emailVerification.create({
+          data: {
+            expiresAt: add(new Date(), { weeks: 1 }),
+            token,
+            user: {
+              connect: {
+                // @ts-ignore
+                id: context.payload.userId,
               },
             },
           },
-        },
-        outputSchema: {
-          required: ["emailVerification"],
-          type: "object",
-          properties: { token: { type: "string" } },
-        },
-      })
-    )
-    .use(auth)
-    .use(httpErrorHandler())
-    .use(cors(baseOptions));
+        });
+      } catch {
+        throw createError(500, "Something went wrong.");
+      }
+
+      try {
+        // TODO: extract this to a separete lambda?
+        sendMail(`http://localhost:3000/verify-email?token=${token}`);
+      } catch {
+        throw createError(500, "Could not send email.");
+      }
+
+      return {
+        statusCode: 201,
+        body: JSON.stringify({ emailVerification: result }),
+      };
+    })
+      .use(jsonBodyParser())
+      // TODO: revisit validation
+      // .use(
+      //   validator({
+      //     outputSchema: {
+      //       required: ["emailVerification"],
+      //       type: "object",
+      //       properties: { emailVerification: { type: "string" } },
+      //     },
+      //   })
+      // )
+      .use(auth)
+      .use(httpErrorHandler())
+      .use(cors(baseOptions))
+  );
 };

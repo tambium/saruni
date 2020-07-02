@@ -28,7 +28,7 @@ export const createCookieHandler = () => {
   return middy(async (event: APIGatewayEvent, context) => {
     let payload = context.payload;
 
-    if (event.httpMethod === "POST") {
+    if (event.httpMethod === "PUT") {
       const { exp, iat, ...rest } = payload;
 
       return {

@@ -41,15 +41,16 @@ export const createRefreshTokenHandler = () => {
       }),
     };
   })
-    .use(
-      validator({
-        outputSchema: {
-          required: ["jwt"],
-          type: "object",
-          properties: { jwt: { type: "string" } },
-        },
-      })
-    )
+    // TODO: revisit validation
+    // .use(
+    //   validator({
+    //     outputSchema: {
+    //       required: ["jwt"],
+    //       type: "object",
+    //       properties: { jwt: { type: "string" } },
+    //     },
+    //   })
+    // )
     .use(httpErrorHandler())
     .use(
       cors({
