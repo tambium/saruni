@@ -6,11 +6,11 @@ export const command = "dev";
 export const desc = "Start development servers.";
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option("cloud", { alias: "c", default: false, type: "boolean" });
+  return yargs.option("cloud", { default: false, type: "boolean" });
 };
 
-export const handler = async (args: { cloud: string; u: string }) => {
-  if (args.cloud === "true" || args.u === "true") {
+export const handler = async (args: { cloud: string }) => {
+  if (args.cloud === "true") {
     return await concurrently([
       {
         command: "cd packages/web && yarn dev:cloud",
