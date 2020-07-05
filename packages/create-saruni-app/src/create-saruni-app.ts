@@ -2,14 +2,13 @@
 
 import fs from "fs";
 import path from "path";
-
-import decompress from "decompress";
 import axios from "axios";
-import Listr from "listr";
-import execa from "execa";
-import tmp from "tmp";
-import checkNodeVersion from "check-node-version";
 import chalk from "chalk";
+import checkNodeVersion from "check-node-version";
+import decompress from "decompress";
+import execa from "execa";
+import Listr from "listr";
+import tmp from "tmp";
 
 const RELEASE_URL =
   "https://api.github.com/repos/tambium/create-saruni-app/releases/latest";
@@ -110,12 +109,51 @@ const installNodeModulesTasks = ({ newAppDir }) => {
       },
     },
     {
-      title: "Installing packages. You’ll be all set soon.",
+      title: "Installing packages. This might take a couple of minutes.",
       task: () => {
         return execa("yarn install", {
           shell: true,
           cwd: newAppDir,
         });
+      },
+    },
+  ];
+};
+
+const initializeProjectTasks = ({ newAppDir }) => {
+  return [
+    {
+      title: "Initializing Git repository.",
+      task: async () => {
+        try {
+          await execa("git", ["init"], { cwd: newAppDir });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+    {
+      title: "Adding changes to staging area.",
+      task: async () => {
+        try {
+          await execa("git", ["add", "."], { cwd: newAppDir });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+    {
+      title: "Capturing changes.",
+      task: async () => {
+        try {
+          await execa(
+            "git",
+            ["commit", "-m", "Initialize project using Create Saruni App"],
+            { cwd: newAppDir }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       },
     },
   ];
@@ -130,6 +168,10 @@ new Listr(
     {
       title: "Installing packages",
       task: () => new Listr(installNodeModulesTasks({ newAppDir })),
+    },
+    {
+      title: "Initializing project",
+      task: () => new Listr(initializeProjectTasks({ newAppDir })),
     },
   ],
   { collapse: false, exitOnError: true }
