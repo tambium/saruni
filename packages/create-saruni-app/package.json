@@ -1,7 +1,9 @@
 {
   "name": "create-saruni-app",
   "version": "0.0.5",
-  "bin": "./dist/create-saruni-app.js",
+  "bin": {
+    "create-saruni-app": "./dist/create-saruni-app.js"
+  },
   "files": [
     "dist"
   ],
