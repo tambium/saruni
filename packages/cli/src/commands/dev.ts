@@ -1,4 +1,5 @@
 import concurrently from "concurrently";
+import { getPaths } from "@saruni/internal";
 import { CommandBuilder } from "yargs";
 
 export const command = "dev";
@@ -23,10 +24,10 @@ export const handler = async (args: { cloud: boolean }) => {
       command: "yarn ds",
     },
     {
-      command: "cd packages/web && yarn dev",
+      command: `cd ${getPaths().web.base} && yarn dev`,
     },
     {
-      command: "cd packages/api && npx prisma generate --watch",
+      command: `cd ${getPaths().api.base} && npx prisma generate --watch`,
     },
   ]);
 };
