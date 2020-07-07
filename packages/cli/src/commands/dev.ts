@@ -1,4 +1,5 @@
 import concurrently from "concurrently";
+import { getPaths } from "@saruni/internal";
 import { CommandBuilder } from "yargs";
 
 export const command = "dev";
@@ -9,8 +10,8 @@ export const builder: CommandBuilder = (yargs) => {
   return yargs.option("cloud", { default: false, type: "boolean" });
 };
 
-export const handler = async (args: { cloud: string }) => {
-  if (args.cloud === "true") {
+export const handler = async (args: { cloud: boolean }) => {
+  if (args.cloud === true) {
     return await concurrently([
       {
         command: "cd packages/web && yarn dev:cloud",
@@ -23,10 +24,10 @@ export const handler = async (args: { cloud: string }) => {
       command: "yarn ds",
     },
     {
-      command: "cd packages/web && yarn dev",
+      command: `cd ${getPaths().web.base} && yarn dev`,
     },
     {
-      command: "cd packages/api && npx prisma generate --watch",
+      command: `cd ${getPaths().api.base} && npx prisma generate --watch`,
     },
   ]);
 };
