@@ -107,8 +107,6 @@ app.use(
   })
 );
 
-const WATCHER_IGNORE_EXTENSIONS = [".db", ".sqlite", "-journal"];
-
 const graphqlWatcher = chokidar.watch(getPaths().web.graphql);
 
 let isGeneratingGraphqlFiles = false;
@@ -126,6 +124,8 @@ graphqlWatcher.on("ready", () => {
     }
   });
 });
+
+const WATCHER_IGNORE_EXTENSIONS = [".db"];
 
 const apiWatcher = chokidar.watch(getPaths().api.base, {
   ignored: (file: string) =>
@@ -174,7 +174,7 @@ app.get("/", (_, res) => {
   res.send(`
   <html>
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
-    <div>the following functions are avaliable</div>
+    <div>The following functions are available:</div>
     <ul>
   ${Object.entries(functions).map(([key]) => {
     return `<li><a href="/${key}">${key}</a></li>`;
