@@ -1,24 +1,12 @@
 import * as React from "react";
 
 import { ApolloProvider } from "@apollo/react-hooks";
+import { getApiEndpoint } from "@saruni/core";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
-
-const getAPIEndpoint = (resource: string) => {
-  if (
-    (process.env.NODE_ENV === "development" &&
-      process.env.NEXT_PUBLIC_USE_CLOUD === "true" &&
-      process.env.NEXT_PUBLIC_API_URL) ||
-    process.env.NODE_ENV === "production"
-  ) {
-    return `${process.env.NEXT_PUBLIC_API_URL}/${resource}`;
-  }
-
-  return `http://localhost:4000/${resource}`;
-};
 
 interface GenerateApiProviderOptions {
   apolloClient?: ApolloClient<NormalizedCacheObject>;
@@ -30,7 +18,7 @@ export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
   let client: ApolloClient<NormalizedCacheObject>;
 
   const httpLink = new HttpLink({
-    uri: getAPIEndpoint("graphql"),
+    uri: getApiEndpoint().graphql,
     credentials: "include",
   });
 

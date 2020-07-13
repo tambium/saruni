@@ -1,0 +1,23 @@
+{
+  "name": "@saruni/core",
+  "version": "0.0.1",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "dist/index.d.ts",
+  "module": "src/index.ts",
+  "main": "dist/index.js",
+  "dependencies": {
+    "url-join": "^4.0.1"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "devDependencies": {
+    "@types/url-join": "^4.0.0"
+  }
+}
