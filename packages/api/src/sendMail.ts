@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export async function sendMail(url: string) {
+export async function sendMail(url: string, code?: number) {
   // async..await is not allowed in global scope, must use a wrapper
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
@@ -27,6 +27,9 @@ export async function sendMail(url: string) {
     
     
     <a href="${url}">link is here </a>
+
+
+    the code is: ${code}
     
     
     

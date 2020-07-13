@@ -1,75 +1,108 @@
+import {
+  APIGatewayEvent,
+  APIGatewayProxyResultV2,
+  Context,
+  Callback,
+} from "aws-lambda";
 import { isBefore } from "date-fns";
 import createError from "http-errors";
 import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import httpErrorHandler from "@middy/http-error-handler";
-import validator from "@middy/validator";
-import jsonBodyParser from "@middy/http-json-body-parser";
 
-import { baseOptions } from "./corsOptions";
+interface VerifyEmailBody {
+  body: {
+    code?: number;
+    token?: string;
+  };
+}
 
-export const createVerifyEmail = ({ db }) => {
-  return middy(async (event) => {
+interface JwtLambdaEvent {
+  payload: {
+    userId: number;
+  };
+}
+export type Handler<TEvent = any, TResult = any, TContext = {}> = (
+  event: TEvent,
+  context: Context & TContext,
+  callback: Callback<TResult>
+) => void | Promise<TResult>;
+
+type VerifyEmailEvent = Omit<APIGatewayEvent, "body"> &
+  VerifyEmailBody &
+  JwtLambdaEvent;
+
+interface JwtContext {
+  payload: { userId: number };
+}
+
+type VerifyEmailLambda = Handler<
+  VerifyEmailEvent,
+  APIGatewayProxyResultV2,
+  JwtContext
+>;
+
+export const createVerifyEmailLambda = ({ db }) => {
+  const handler: VerifyEmailLambda = async (event, context) => {
     const token = event.body.token;
+    const code = event.body.code;
 
-    const result = await db.emailVerification.findMany({
-      //@ts-ignore
-      where: { token },
-      orderBy: { expiresAt: "desc" },
-      take: 1,
-    });
+    const userId = context.payload.userId;
 
-    if (result.length === 0) {
-      /*
-       * Failure to find a result could mean one of two things (or more?):
-       * 1. no tokens exist for this user in the EmailVerification table
-       * 2. user has already verified their email and the token has been
-       * removed from EmailVerification
-       */
-      throw createError(
-        400,
-        `Email could not be verified. Please request a new email.`
+    if (!token && !code) {
+      throw new createError.BadRequest(
+        "Either token or code must be sent with the request."
       );
     }
 
-    const latest = result[0];
+    const user = await db.user.findOne({
+      where: { id: userId },
+    });
 
-    if (isBefore(new Date(), latest.expiresAt)) {
-      await db.user.update({
-        // @ts-ignore
-        where: { id: latest.userId },
-        data: { emailVerified: true },
-      });
+    if (!user.emailVerified) {
+      let result;
 
-      await db.emailVerification.deleteMany({
-        where: { userId: latest.userId },
-      });
+      if (token) {
+        result = await db.emailVerification.findMany({
+          where: { token, userId },
+          orderBy: { expiresAt: "desc" },
+          take: 1,
+        });
+
+        if (result.length === 0) {
+          throw createError(
+            400,
+            `Email could not be verified. Please request a new email.`
+          );
+        }
+      } else if (code) {
+        result = await db.emailVerification.findMany({
+          where: { code, userId },
+          orderBy: { expiresAt: "desc" },
+          take: 1,
+        });
+
+        if (result.length === 0) {
+          throw createError(400, `Incorrect code provided.`);
+        }
+      }
+
+      const latest = result[0];
+
+      if (isBefore(new Date(), latest.expiresAt)) {
+        await db.user.update({
+          where: { id: latest.userId },
+          data: { emailVerified: true },
+        });
+
+        await db.emailVerification.deleteMany({
+          where: { userId: latest.userId },
+        });
+      }
     }
 
     return {
       statusCode: 204,
     };
-  })
-    .use(jsonBodyParser())
-    .use(
-      validator({
-        inputSchema: {
-          required: ["body"],
-          type: "object",
-          properties: {
-            body: {
-              type: "object",
-              required: ["token"],
-              properties: {
-                token: {
-                  type: "string",
-                },
-              },
-            },
-          },
-        },
-      })
-    )
-    .use(httpErrorHandler())
-    .use(cors(baseOptions));
+  };
+
+  return middy(handler);
 };

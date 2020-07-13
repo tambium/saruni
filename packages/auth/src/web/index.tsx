@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { useApolloClient } from "@apollo/react-hooks";
+import { getApiEndpoint } from "@saruni/core";
 import { setContext } from "apollo-link-context";
 import jwtDecode from "jwt-decode";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -10,19 +11,6 @@ import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import fetch from "isomorphic-unfetch";
 
-const getAPIEndpoint = (resource: string) => {
-  if (
-    (process.env.NODE_ENV === "development" &&
-      process.env.NEXT_PUBLIC_USE_CLOUD === "true" &&
-      process.env.NEXT_PUBLIC_API_URL) ||
-    process.env.NODE_ENV === "production"
-  ) {
-    return `${process.env.NEXT_PUBLIC_API_URL}/${resource}`;
-  }
-
-  return `http://localhost:4000/${resource}`;
-};
-
 import { useRouter } from "next/router";
 
 const isServer = () => typeof window === "undefined";
@@ -31,7 +19,6 @@ const isDev = () => process.env.NODE_ENV !== "production";
 
 let accessToken: string | undefined = undefined;
 
-// TODO: temp solution
 export const getAccessToken = () => {
   return accessToken;
 };
@@ -44,7 +31,7 @@ export const removeAccessToken = () => {
   accessToken = undefined;
 };
 
-export const refreshLink = setContext(async (_request, { headers }) => {
+const isTokenValid = () => {
   const token = getAccessToken();
 
   let isTokenValid = false;
@@ -57,9 +44,13 @@ export const refreshLink = setContext(async (_request, { headers }) => {
     }
   } catch {}
 
-  if (!isTokenValid) {
+  return isTokenValid;
+};
+
+export const refreshToken = async () => {
+  if (!isTokenValid()) {
     try {
-      const result = await fetch(getAPIEndpoint("refresh_token"), {
+      const result = await fetch(getApiEndpoint().refreshToken, {
         method: "POST",
         credentials: "include",
       });
@@ -69,6 +60,10 @@ export const refreshLink = setContext(async (_request, { headers }) => {
       setAccessToken(json.jwt);
     } catch {}
   }
+};
+
+export const refreshLink = setContext(async (_request, { headers }) => {
+  await refreshToken();
 
   return {
     headers: {
@@ -93,7 +88,7 @@ export const authLink = setContext(async (_request, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: getAPIEndpoint("graphql"),
+  uri: getApiEndpoint().graphql,
   credentials: "include",
   fetch,
 });
@@ -123,7 +118,7 @@ export const setToken = async (token) => {
   try {
     setAccessToken(token);
 
-    await fetch(getAPIEndpoint("cookie_manager"), {
+    await fetch(getApiEndpoint().cookieManager, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -137,7 +132,7 @@ export const setToken = async (token) => {
 
 export const removeToken = async () => {
   try {
-    await fetch(getAPIEndpoint("cookie_manager"), {
+    await fetch(getApiEndpoint().cookieManager, {
       method: "DELETE",
       credentials: "include",
       headers: {
@@ -185,7 +180,9 @@ export const jwtClient = new ApolloClient({
 });
 
 export const useAuth = () => {
-  return React.useContext(AuthContext);
+  const context = React.useContext(AuthContext);
+
+  return context;
 };
 
 export const privateRoute = (
@@ -219,51 +216,64 @@ export const privateRoute = (
 
 export const useVerifyEmail = () => {
   const router = useRouter();
-  const {
-    query: { token },
-  } = router;
 
   const { isAuthenticated } = useAuth();
 
-  const [status, setStatus] = React.useState<string | undefined>(undefined);
-  const [error, setError] = React.useState<string | undefined>(undefined);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const token = router?.query?.token;
+
+  const [loading, setLoading] = React.useState(() => {
+    return !!token;
+  });
+
+  const [done, setDone] = React.useState(() => false);
+
+  const handler = React.useCallback(async (token) => {
+    const fetchResult = await fetch(getApiEndpoint().verifyEmail, {
+      method: "PUT",
+      body: JSON.stringify({ token }),
+      headers: {
+        "content-type": "application/json",
+        authentication: `bearer ${getAccessToken()}`,
+      },
+    });
+
+    if (!fetchResult.ok) {
+      throw new Error(fetchResult.statusText);
+    }
+
+    setDone(true);
+    setLoading(false);
+
+    return true;
+  }, []);
 
   const callback = React.useCallback(async () => {
-    if (!token || !isAuthenticated) return;
-
-    setLoading(true);
+    if (!token) return;
 
     const firstToken: string = Array.isArray(token) ? token[0] : token;
 
-    try {
-      const fetchResult = await fetch("http://localhost:4000/verify_email", {
-        method: "PUT",
-        body: JSON.stringify({ token: firstToken }),
-        headers: {
-          authentication: "bearer " + getAccessToken(),
-        },
-      });
+    return await handler(firstToken);
+  }, [token]);
 
-      if (fetchResult.ok) {
-        setError(undefined);
+  const callbackWithCode = async (code: number) => {
+    const fetchResult = await fetch(getApiEndpoint().verifyEmail, {
+      method: "PUT",
+      body: JSON.stringify({ code }),
+      // credentials: "include",
+      headers: {
+        "content-type": "application/json",
+        authentication: `bearer ${getAccessToken()}`,
+      },
+    });
 
-        setStatus("done");
-
-        setLoading(false);
-      } else {
-        throw new Error("Something went wrong");
-      }
-    } catch (e) {
-      setError(e.message);
-
-      setLoading(false);
-    }
-  }, [token, isAuthenticated]);
+    return fetchResult;
+  };
 
   React.useEffect(() => {
-    callback();
-  }, [callback]);
+    if (isAuthenticated) {
+      callback();
+    }
+  }, [callback, isAuthenticated]);
 
-  return { verifyEmail: callback, status, error, loading };
+  return [{ done, loading }, callback, callbackWithCode];
 };

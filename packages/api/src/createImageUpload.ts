@@ -7,9 +7,13 @@ import validator from "@middy/validator";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import { v4 as uuidV4 } from "uuid";
 
-import type { APIGatewayEvent } from "aws-lambda";
+import type {
+  APIGatewayEvent,
+  Handler,
+  APIGatewayProxyResultV2,
+} from "aws-lambda";
 
-import { baseOptions } from "./corsOptions";
+import { credentialsOptions } from "./corsOptions";
 
 interface ImageUploadProperties {
   auth?: any;
@@ -22,11 +26,13 @@ interface ImageUploadBody {
 
 type ImageUploadEvent = Omit<APIGatewayEvent, "body"> & ImageUploadBody;
 
+type ImageUploadLambda = Handler<ImageUploadEvent, APIGatewayProxyResultV2>;
+
 export const createImageUpload = ({
   auth = {},
   bucketName,
 }: ImageUploadProperties) => {
-  return middy(async (event: ImageUploadEvent) => {
+  return middy(async (event) => {
     let path: string,
       contentType: string,
       body: Buffer,
@@ -36,6 +42,7 @@ export const createImageUpload = ({
     try {
       const { image, pathPrefix } = event.body;
 
+      // TODO: sanitize the image, check types
       body = Buffer.from(
         image.replace(/^data:image\/\w+;base64,/, ""),
         "base64"
@@ -54,26 +61,40 @@ export const createImageUpload = ({
       throw createError(422, "Could not process image.");
     }
 
+    if (!contentType.includes("image")) {
+      throw createError(422, "File provided is not an image.");
+    }
+
     try {
-      const uploadResult = await new AWS.S3.ManagedUpload({
-        params: {
+      await new AWS.S3()
+        .putObject({
           Body: body,
           Bucket: bucketName,
           Key: path,
           ContentType: contentType,
           ContentEncoding: "base64",
-        },
-      }).promise();
+        })
+        .promise();
 
-      location = uploadResult.Location;
+      const {
+        LocationConstraint,
+      } = await new AWS.S3().getBucketLocation().promise();
+
+      const region =
+        process.env.AWS_REGION || LocationConstraint || "eu-west-1";
+
+      location = `https://${bucketName}.s3-${region}.amazonaws.com/${path}`;
     } catch {
       createError(500, "Could not upload image.");
     }
 
-    return {
-      statusCode: 201,
-      body: JSON.stringify({ location }),
-    };
+    return "sdfs";
+
+    // return {
+    //   post: "sdfs",
+    //   statusCode: 201,
+    //   body: JSON.stringify({ location }),
+    // };
   })
     .use(jsonBodyParser())
     .use(
@@ -96,14 +117,9 @@ export const createImageUpload = ({
             },
           },
         },
-        outputSchema: {
-          required: ["location"],
-          type: "object",
-          properties: { location: { type: "string" } },
-        },
       })
     )
     .use(auth)
     .use(httpErrorHandler())
-    .use(cors(baseOptions));
+    .use(cors(credentialsOptions));
 };

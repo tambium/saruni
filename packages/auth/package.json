@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
+    "@saruni/core": "0.0.1",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-context": "^1.0.20",
