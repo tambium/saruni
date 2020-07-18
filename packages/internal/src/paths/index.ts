@@ -4,8 +4,10 @@ import { readFile } from "fs-extra";
 
 const CONFIG_FILE_NAME = "saruni.json";
 const DOT_ENV = ".env";
+const JEST_CONFIG = "jest.config.js";
 const SERVERLESS_YML = "serverless.yml";
 
+const PATH_API_DIR = "packages/api";
 const PATH_API_DIR_DB = "packages/api/src/db";
 const PATH_API_DIR_FUNCTIONS = "packages/api/src/functions";
 const PATH_API_DIR_GRAPHQL = "packages/api/src/graphql";
@@ -74,6 +76,8 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
       services: path.join(BASE_DIR, PATH_API_DIR_SERVICES),
       src: path.join(BASE_DIR, PATH_API_DIR_SRC),
       packagejson: path.join(BASE_DIR, "packages/api", "package.json"),
+      seedFile: path.join(BASE_DIR, PATH_API_DIR_DB, "seed.ts"),
+      jestConfig: path.join(BASE_DIR, PATH_API_DIR, JEST_CONFIG),
     },
     web: {
       base: path.join(BASE_DIR, "packages/web"),
