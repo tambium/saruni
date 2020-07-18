@@ -20,7 +20,7 @@ babelRequireHook({
 
 const { db } = require(getPaths().api.db);
 
-const mainText = chalk.black.bgMagenta.bold;
+const mainText = chalk.white.bgMagenta.bold;
 
 const errorText = chalk.white.bgRed.bold;
 
