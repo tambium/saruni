@@ -1,4 +1,3 @@
-import "./env";
-
-export * from "./error";
+export * from "./env";
 export * from "./paths";
+export * from "./error";
