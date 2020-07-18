@@ -3,6 +3,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import type { Request, Response } from "express";
 import babelRequireHook from "@babel/register";
 import bodyParser from "body-parser";
+import chalk from "chalk";
 import chokidar from "chokidar";
 import cors from "cors";
 import execa from "execa";
@@ -115,8 +116,15 @@ graphqlWatcher.on("ready", () => {
   graphqlWatcher.on("change", async () => {
     try {
       if (!isGeneratingGraphqlFiles) {
+        console.log(
+          chalk.green("GraphQL schema files changed. Generating new files...")
+        );
+
         isGeneratingGraphqlFiles = true;
+
         await execa("yarn", ["gen"], { cwd: getPaths().web.base });
+
+        console.log(chalk.green("New files have been generated for apollo."));
       }
     } catch {
     } finally {
