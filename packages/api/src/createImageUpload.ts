@@ -88,13 +88,10 @@ export const createImageUpload = ({
       createError(500, "Could not upload image.");
     }
 
-    return "sdfs";
-
-    // return {
-    //   post: "sdfs",
-    //   statusCode: 201,
-    //   body: JSON.stringify({ location }),
-    // };
+    return {
+      statusCode: 201,
+      body: JSON.stringify({ location }),
+    };
   })
     .use(jsonBodyParser())
     .use(
