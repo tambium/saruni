@@ -1,7 +1,6 @@
 import { makeExecutableSchema } from "@saruni/api";
 import { getPaths } from "@saruni/internal";
 import { graphql, ExecutionResult } from "graphql";
-import { ExecutionResultDataDefault } from "graphql/execution/execute";
 import path from "path";
 import type { PrismaClient } from "@prisma/client";
 
@@ -25,7 +24,7 @@ interface TestContext {
       variables: any;
       context: any;
     }
-  ) => Promise<ExecutionResult<ExecutionResultDataDefault>>;
+  ) => Promise<ExecutionResult>;
   setGraphQLContext: (context: any) => void;
 }
 

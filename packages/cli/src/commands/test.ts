@@ -36,7 +36,7 @@ export const handler = async () => {
       env: { DATABASE_URL: process.env.DATABASE_URL_TEST },
     });
 
-    await run();
+    await run([`--config=${require.resolve("@saruni/config/dist/index.js")}`]);
   } catch (e) {
     console.log(e);
   }
