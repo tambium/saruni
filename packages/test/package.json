@@ -16,8 +16,9 @@
   },
   "dependencies": {
     "@prisma/client": "^2.2.2",
+    "@saruni/api": "latest",
     "@saruni/internal": "0.0.6",
-    "@saruni/api": "latest"
+    "msw": "^0.19.5"
   },
   "devDependencies": {
     "@types/jest": "^26.0.4"

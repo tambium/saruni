@@ -29,7 +29,7 @@ interface TestContext {
   setGraphQLContext: (context: any) => void;
 }
 
-export const createTestContext = (db: PrismaClient): TestContext => {
+export const createApiTestContext = (db: PrismaClient): TestContext => {
   let mainContext = {};
 
   let schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -37,6 +37,8 @@ export const createTestContext = (db: PrismaClient): TestContext => {
   beforeAll(async () => {});
 
   afterAll(async () => {
+    // await db.queryRaw(`DROP SCHEMA IF EXISTS "public" CASCADE`);
+
     await db.disconnect();
   });
 
