@@ -7,6 +7,7 @@ import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
+import fetch from "isomorphic-unfetch";
 
 interface GenerateApiProviderOptions {
   apolloClient?: ApolloClient<NormalizedCacheObject>;
@@ -20,6 +21,7 @@ export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
   const httpLink = new HttpLink({
     uri: getApiEndpoint().graphql,
     credentials: "include",
+    fetch,
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
