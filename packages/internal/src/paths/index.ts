@@ -15,6 +15,7 @@ const PATH_API_DIR_PRISMA = "packages/api/prisma";
 const PATH_API_DIR_PRISMA_SCHEMA = "packages/api/prisma/schema.prisma";
 const PATH_API_DIR_SERVICES = "packages/api/src/services";
 const PATH_API_DIR_SRC = "packages/api/src";
+const PATH_STATIC_DIR_EMAIL = "packages/static/src/email";
 const PATH_WEB_DIR_COMPONENTS = "packages/web/src/components";
 const PATH_WEB_DIR_GRAPHQL = "packages/web/src/graphql";
 const PATH_WEB_DIR_LAYOUTS = "packages/web/src/layouts";
@@ -78,6 +79,10 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
       packagejson: path.join(BASE_DIR, "packages/api", "package.json"),
       seedFile: path.join(BASE_DIR, PATH_API_DIR_DB, "seed.ts"),
       jestConfig: path.join(BASE_DIR, PATH_API_DIR, JEST_CONFIG),
+    },
+    static: {
+      base: path.join(BASE_DIR, "packages/static"),
+      email: path.join(BASE_DIR, PATH_STATIC_DIR_EMAIL),
     },
     web: {
       base: path.join(BASE_DIR, "packages/web"),
