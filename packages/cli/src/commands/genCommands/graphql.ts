@@ -13,7 +13,7 @@ export const handler = async () => {
   try {
     await new Listr([
       {
-        title: `Generating graphql code.`,
+        title: `Generating GraphQL code.`,
         task: async () => {
           await execa("yarn", ["gen"], { cwd: getPaths().web.base });
         },

@@ -15,7 +15,8 @@ const PATH_API_DIR_PRISMA = "packages/api/prisma";
 const PATH_API_DIR_PRISMA_SCHEMA = "packages/api/prisma/schema.prisma";
 const PATH_API_DIR_SERVICES = "packages/api/src/services";
 const PATH_API_DIR_SRC = "packages/api/src";
-const PATH_STATIC_DIR_EMAIL = "packages/static/src/email";
+const PATH_STATIC_DIR = "packages/static";
+const PATH_WEB_DIR = "packages/web";
 const PATH_WEB_DIR_COMPONENTS = "packages/web/src/components";
 const PATH_WEB_DIR_GRAPHQL = "packages/web/src/graphql";
 const PATH_WEB_DIR_LAYOUTS = "packages/web/src/layouts";
@@ -68,7 +69,7 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
     },
     packagejson: path.join(BASE_DIR, "package.json"),
     api: {
-      base: path.join(BASE_DIR, "packages/api"),
+      base: path.join(BASE_DIR, PATH_API_DIR),
       db: path.join(BASE_DIR, PATH_API_DIR_DB),
       functions: path.join(BASE_DIR, PATH_API_DIR_FUNCTIONS),
       graphql: path.join(BASE_DIR, PATH_API_DIR_GRAPHQL),
@@ -76,23 +77,22 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
       prismaSchema: path.join(BASE_DIR, PATH_API_DIR_PRISMA_SCHEMA),
       services: path.join(BASE_DIR, PATH_API_DIR_SERVICES),
       src: path.join(BASE_DIR, PATH_API_DIR_SRC),
-      packagejson: path.join(BASE_DIR, "packages/api", "package.json"),
+      packagejson: path.join(BASE_DIR, PATH_API_DIR, "package.json"),
       seedFile: path.join(BASE_DIR, PATH_API_DIR_DB, "seed.ts"),
       jestConfig: path.join(BASE_DIR, PATH_API_DIR, JEST_CONFIG),
     },
     static: {
-      base: path.join(BASE_DIR, "packages/static"),
-      email: path.join(BASE_DIR, PATH_STATIC_DIR_EMAIL),
+      base: path.join(BASE_DIR, PATH_STATIC_DIR),
     },
     web: {
-      base: path.join(BASE_DIR, "packages/web"),
+      base: path.join(BASE_DIR, PATH_WEB_DIR),
       components: path.join(BASE_DIR, PATH_WEB_DIR_COMPONENTS),
       layouts: path.join(BASE_DIR, PATH_WEB_DIR_LAYOUTS),
       graphql: path.join(BASE_DIR, PATH_WEB_DIR_GRAPHQL),
       pages: path.join(BASE_DIR, PATH_WEB_DIR_PAGES),
       src: path.join(BASE_DIR, PATH_WEB_DIR_SRC),
       views: path.join(BASE_DIR, PATH_WEB_DIR_VIEWS),
-      packagejson: path.join(BASE_DIR, "packages/web", "package.json"),
+      packagejson: path.join(BASE_DIR, PATH_WEB_DIR, "package.json"),
     },
   };
 };

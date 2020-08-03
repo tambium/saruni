@@ -1,9 +1,10 @@
 {
   "name": "@saruni/email",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "module": "src/index.ts",
+  "bin": {
+    "saruni-generate-email": "./dist/commands/generate.js",
+    "saruni-serve-email": "./dist/commands/serve.js"
+  },
   "files": [
     "dist"
   ],

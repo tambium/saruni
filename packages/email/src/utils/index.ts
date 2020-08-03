@@ -1,2 +1,3 @@
-export { createEmail } from "./createEmail";
-export { saveEmail } from "./saveEmail";
+export { createEmail } from "./create-email";
+export { generateEmail } from "./generate-email";
+export { saveEmail } from "./save-email";

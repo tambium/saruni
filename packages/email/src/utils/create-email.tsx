@@ -4,7 +4,6 @@ import { CacheProvider } from "@emotion/core";
 import createCache from "@emotion/cache";
 import createEmotionServer from "create-emotion-server";
 import juice from "juice";
-import declassify from "declassify";
 
 const EmotionCache = createCache();
 const { extractCritical } = createEmotionServer(EmotionCache);
@@ -22,7 +21,7 @@ export const createEmail = async (Template: React.FC) => {
    * Inline CSS that is non-global and does not feature
    * media queries and removes unused class names.
    */
-  const processed: string = declassify(juice(`<style>${css}</style>${html}`));
+  const processed: string = juice(`<style>${css}</style>${html}`);
 
   return processed;
 };
