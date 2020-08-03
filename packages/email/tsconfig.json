@@ -1,0 +1,9 @@
+{
+  "extends": "@tambium/typescript-configs/base.tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "outDir": "./dist",
+    "types": ["node"]
+  },
+  "include": ["./src"]
+}
