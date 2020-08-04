@@ -1,6 +1,6 @@
 {
   "name": "@saruni/cli",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
@@ -25,9 +25,9 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.0",
     "@prisma/cli": "^2.0.0-beta.6",
-    "@saruni/config": "^0.0.2",
-    "@saruni/email": "0.0.1",
-    "@saruni/internal": "^0.0.7",
+    "@saruni/config": "^0.0.3",
+    "@saruni/email": "^0.0.2",
+    "@saruni/internal": "^0.0.8",
     "@tambium/babel-preset": "^1.0.5",
     "axios": "^0.19.2",
     "chalk": "^4.0.0",
