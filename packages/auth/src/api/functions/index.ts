@@ -1,4 +1,4 @@
-import { createCookieHandler } from "./createCookieHandler";
-import { createRefreshTokenHandler } from "./createRefreshTokenHandler";
+import { cookieManager } from "./createCookieHandler";
+import { refreshToken } from "./createRefreshTokenHandler";
 
-export { createCookieHandler, createRefreshTokenHandler };
+export { cookieManager, refreshToken };

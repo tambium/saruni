@@ -6,7 +6,6 @@ import {
 } from "aws-lambda";
 import { isBefore } from "date-fns";
 import createError from "http-errors";
-import middy from "@middy/core";
 
 interface VerifyEmailBody {
   body: {
@@ -40,7 +39,7 @@ type VerifyEmailLambda = Handler<
   JwtContext
 >;
 
-export const createVerifyEmailLambda = ({ db }) => {
+export const verifyEmail = ({ db }) => {
   const handler: VerifyEmailLambda = async (event, context) => {
     const token = event.body.token;
     const code = event.body.code;
@@ -104,5 +103,5 @@ export const createVerifyEmailLambda = ({ db }) => {
     };
   };
 
-  return middy(handler);
+  return handler;
 };

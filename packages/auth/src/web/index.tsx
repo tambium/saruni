@@ -53,6 +53,9 @@ export const refreshToken = async () => {
       const result = await fetch(getApiEndpoint().refreshToken, {
         method: "POST",
         credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
       });
 
       const json = await result.json();
@@ -79,7 +82,7 @@ export const authLink = setContext(async (_request, { headers }) => {
     return {
       headers: {
         ...headers,
-        authentication: token ? `bearer ${token}` : "",
+        authorization: token ? `bearer ${token}` : "",
       },
     };
   }
@@ -122,7 +125,7 @@ export const setToken = async (token) => {
       method: "PUT",
       credentials: "include",
       headers: {
-        authentication: `bearer ${token}`,
+        authorization: `bearer ${token}`,
       },
     });
   } catch (e) {
@@ -136,7 +139,7 @@ export const removeToken = async () => {
       method: "DELETE",
       credentials: "include",
       headers: {
-        authentication: `bearer ${getAccessToken()}`,
+        authorization: `bearer ${getAccessToken()}`,
       },
     });
 
@@ -146,7 +149,7 @@ export const removeToken = async () => {
   }
 };
 
-export const useJwtToken = () => {
+export const useJwt = () => {
   const client = useApolloClient();
 
   return {
@@ -233,7 +236,7 @@ export const useVerifyEmail = () => {
       body: JSON.stringify({ token }),
       headers: {
         "content-type": "application/json",
-        authentication: `bearer ${getAccessToken()}`,
+        authorization: `bearer ${getAccessToken()}`,
       },
     });
 
@@ -262,7 +265,7 @@ export const useVerifyEmail = () => {
       // credentials: "include",
       headers: {
         "content-type": "application/json",
-        authentication: `bearer ${getAccessToken()}`,
+        authorization: `bearer ${getAccessToken()}`,
       },
     });
 

@@ -22,8 +22,9 @@
     "@middy/http-error-handler": "^1.0.0",
     "@middy/http-json-body-parser": "^1.0.0",
     "@middy/validator": "^1.0.0",
-    "apollo-server-lambda": "^2.14.0",
+    "apollo-server-lambda": "2.16.1",
     "aws-lambda": "^1.0.6",
+    "aws-sdk": "^2.718.0",
     "date-fns": "^2.14.0",
     "http-errors": "^1.7.3",
     "nodemailer": "^6.4.10",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.1",
+    "@types/aws-sdk": "^2.7.0",
     "@types/http-errors": "^1.6.3",
     "@types/nodemailer": "^6.4.0",
     "@types/uuid": "^8.0.0"

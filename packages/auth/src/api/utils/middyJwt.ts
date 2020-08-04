@@ -9,9 +9,11 @@ export const jwtMiddleware = () => {
   const middlewareObject = {
     before: (handler, next) => {
       try {
-        const jwtToken = (handler.event.headers[
-          "authentication"
-        ] as string).split(" ")[1];
+        const authHeader =
+          (handler.event.headers["authorization"] as string) ||
+          (handler.event.headers["Authorization"] as string);
+
+        const jwtToken = authHeader.split(" ")[1];
 
         const payload = verify(jwtToken, process.env.ACCESS_TOKEN_SECRET) as {
           userId: number;

@@ -1,6 +1,39 @@
 import nodemailer from "nodemailer";
 
+import aws from "aws-sdk";
+// import Mail from "nodemailer/lib/mailer";
+
+async function setupNodeMailer() {
+  // const nodemailer = require("nodemailer");
+  let testAccount = await nodemailer.createTestAccount();
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+  return transporter;
+}
+
+export async function sendTemplatedEmail(
+  template: aws.SES.SendTemplatedEmailRequest
+) {
+  const {} = template;
+
+  const environment = process.env.NODE_ENV;
+
+  if (environment !== "production") {
+    const transporter = await setupNodeMailer();
+  }
+}
+
 export async function sendMail(url: string, code?: number) {
+  const nodemailer = require("nodemailer");
   // async..await is not allowed in global scope, must use a wrapper
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing

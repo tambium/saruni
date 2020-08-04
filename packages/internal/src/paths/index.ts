@@ -9,7 +9,6 @@ const SERVERLESS_YML = "serverless.yml";
 
 const PATH_API_DIR = "packages/api";
 const PATH_API_DIR_DB = "packages/api/src/db";
-const PATH_API_DIR_FUNCTIONS = "packages/api/src/functions";
 const PATH_API_DIR_GRAPHQL = "packages/api/src/graphql";
 const PATH_API_DIR_PRISMA = "packages/api/prisma";
 const PATH_API_DIR_PRISMA_SCHEMA = "packages/api/prisma/schema.prisma";
@@ -73,7 +72,6 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
     api: {
       base: path.join(BASE_DIR, PATH_API_DIR),
       db: path.join(BASE_DIR, PATH_API_DIR_DB),
-      functions: path.join(BASE_DIR, PATH_API_DIR_FUNCTIONS),
       graphql: path.join(BASE_DIR, PATH_API_DIR_GRAPHQL),
       prisma: path.join(BASE_DIR, PATH_API_DIR_PRISMA),
       prismaSchema: path.join(BASE_DIR, PATH_API_DIR_PRISMA_SCHEMA),

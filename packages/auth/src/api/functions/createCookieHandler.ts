@@ -1,31 +1,27 @@
 import type { APIGatewayEvent } from "aws-lambda";
 import { sign } from "jsonwebtoken";
-import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import httpErrorHandler from "@middy/http-error-handler";
-
-import { jwtMiddleware } from "../utils";
 
 const createCookie = (
   name: string,
   value: string,
   age = 60 ** 2 * 24 * 14,
   expires?: string
-) =>
-  `${name}=${value}; HttpOnly;${
-    process.env.NODE_ENV === "production"
-      ? `Domain=${process.env.API_URL}; Secure;`
+) => {
+  return `${name}=${value}; HttpOnly;${
+    process.env.DOMAIN
+      ? `Domain=${process.env.DOMAIN}; Secure; SameSite=None;`
       : ""
-  } SameSite=Lax; Max-Age=${age}; ${expires ? `Expires: ${expires};` : ""}`;
+  } Max-Age=${age}; ${expires ? `Expires: ${expires};` : ""} path=/;`;
+};
 
-export const createCookieHandler = () => {
+export const cookieManager = () => {
   if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
     throw new Error(
       "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
     );
   }
 
-  return middy(async (event: APIGatewayEvent, context) => {
+  return async (event: APIGatewayEvent, context) => {
     let payload = context.payload;
 
     if (event.httpMethod === "PUT") {
@@ -58,15 +54,16 @@ export const createCookieHandler = () => {
         },
       };
     }
-  })
-    .use(jwtMiddleware())
-    .use(httpErrorHandler())
-    .use(
-      cors({
-        credentials: true,
-        headers:
-          "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent",
-        origin: "http://localhost:3000",
-      })
-    );
+  };
+  return;
 };
+// .use(jwtMiddleware())
+// .use(httpErrorHandler())
+// .use(
+//   cors({
+//     credentials: true,
+//     // headers:
+//     // "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent",
+//     origin: "http://localhost:3000",
+//   })
+// );

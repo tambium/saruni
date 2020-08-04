@@ -9,7 +9,8 @@ export const strategy = (context) => {
     );
   }
 
-  const header = context.headers["authentication"];
+  const header =
+    context.headers["authorization"] || context.headers["Authorization"];
   const bearer = header?.split(" ")[1] || "";
 
   const payload = verify(bearer, ACCESS_TOKEN_SECRET);

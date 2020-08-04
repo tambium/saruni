@@ -1,24 +1,15 @@
+import middy from "@middy/core";
 import { add } from "date-fns";
 import createError from "http-errors";
-import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import httpErrorHandler from "@middy/http-error-handler";
-import jsonBodyParser from "@middy/http-json-body-parser";
 import { v4 as uuidV4 } from "uuid";
 
-import type { Handler } from "aws-lambda";
-
-import { baseOptions } from "./corsOptions";
 import { sendMail } from "./sendMail";
-
-//@ts-ignore
-type CreateSendEmailVerification = ({ db: any }) => Handler;
 
 const between = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-export const createSendEmailVerificationLambda = ({ db }) => {
+export const sendEmailVerification = ({ db }) => {
   // we need to assume the user has the proper db structure for this lambda to work.
   if (!db["emailVerification"]) {
     throw new Error(
@@ -26,6 +17,7 @@ export const createSendEmailVerificationLambda = ({ db }) => {
       "Your database does not have an `EmailVerification` Model. Please create one."
     );
   }
+
   let handler = async (_event, context) => {
     const token = uuidV4();
 
@@ -52,7 +44,7 @@ export const createSendEmailVerificationLambda = ({ db }) => {
     }
 
     try {
-      // TODO: extract this to a separate lambda?
+      // TODO: extract this to a separate lambda using SNS
       sendMail(`http://localhost:3000/verify-email?token=${token}`, code);
     } catch {
       throw createError(500, "Could not send email.");

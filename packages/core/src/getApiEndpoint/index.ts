@@ -2,12 +2,12 @@ import url from "url-join";
 
 const LOCAL_URL = process.env.NEXT_PUBLIC_LOCAL_URL || "http://localhost:4000";
 
-const IMAGE_UPLOAD = "image_upload";
+const IMAGE_UPLOAD = "imageUpload";
 const GRAPHQL = "graphql";
-const REFRESH_TOKEN = "refresh_token";
-const COOKIE_MANAGER = "cookie_manager";
-const VERIFY_EMAIL = "verify_email";
-const SEND_EMAIL_VERIFICATION = "send_email_verification";
+const REFRESH_TOKEN = "refreshToken";
+const COOKIE_MANAGER = "cookieManager";
+const VERIFY_EMAIL = "verifyEmail";
+const SEND_EMAIL_VERIFICATION = "sendEmailVerification";
 
 const getBaseUrl = () => {
   let baseUrl = LOCAL_URL;
@@ -18,7 +18,9 @@ const getBaseUrl = () => {
       process.env.NEXT_PUBLIC_API_URL) ||
     process.env.NODE_ENV === "production"
   ) {
-    baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://" + process.env.DOMAIN + "/" + process.env.STAGE;
   }
 
   return baseUrl;

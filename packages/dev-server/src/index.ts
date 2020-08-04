@@ -8,6 +8,7 @@ import chokidar from "chokidar";
 import cors from "cors";
 import execa from "execa";
 import express from "express";
+import fs from "fs-extra";
 import path from "path";
 import qs from "qs";
 import requireDir from "require-dir";
@@ -141,38 +142,52 @@ const apiWatcher = chokidar.watch(getPaths().api.base, {
     WATCHER_IGNORE_EXTENSIONS.some((ext) => file.endsWith(ext)),
 });
 
-const importFreshFunctions = (functionsPath) => {
+const importFreshFunctions = async (functionsPath) => {
   Object.keys(require.cache).forEach((key) => {
     delete require.cache[key];
   });
 
-  return requireDir(functionsPath, {
-    recurse: false,
-    extensions: [".js", ".ts"],
-  });
+  const services = await fs.readdir(functionsPath);
+
+  return services
+    .filter((item) => item !== ".keep")
+    .map((item) => {
+      return requireDir(path.resolve(functionsPath, item), {
+        extensions: [".js", ".ts"],
+      });
+    })
+    .reduce((sum, item) => {
+      return { ...sum, ...item };
+    }, {});
 };
 
 let functions;
 
-functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+apiWatcher.on("ready", async () => {
+  functions = await importFreshFunctions(path.resolve(getPaths().api.services));
 
-apiWatcher.on("ready", () => {
   apiWatcher.on("all", async (event) => {
     if (/add/.test(event)) {
       console.log("New file added. Rebuilding...");
-      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      functions = await importFreshFunctions(
+        path.resolve(getPaths().api.services)
+      );
       console.log("New functions deployed.");
     }
 
     if (/change/.test(event)) {
       console.log("Code change detected. Rebuilding...");
-      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      functions = await importFreshFunctions(
+        path.resolve(getPaths().api.services)
+      );
       console.log("New functions deployed.");
     }
 
     if (/unlink/.test(event)) {
       console.log("Some file deleted. Rebuilding...");
-      functions = importFreshFunctions(path.resolve(getPaths().api.functions));
+      functions = await importFreshFunctions(
+        path.resolve(getPaths().api.services)
+      );
       console.log("New functions deployed.");
     }
   });
