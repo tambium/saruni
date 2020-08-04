@@ -2,8 +2,8 @@
   "name": "@saruni/email",
   "version": "0.0.1",
   "bin": {
-    "saruni-generate-email": "./dist/commands/generate.js",
-    "saruni-serve-email": "./dist/commands/serve.js"
+    "saruni-generate-emails": "./dist/commands/generate.js",
+    "saruni-serve-emails": "./dist/commands/serve.js"
   },
   "files": [
     "dist"

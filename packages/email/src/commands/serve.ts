@@ -11,9 +11,7 @@ const PORT = 2000;
 (async () => {
   server.use(
     "/",
-    express.static(
-      path.resolve(path.join(getPaths().static.base, `generated/email`))
-    )
+    express.static(path.resolve(getPaths().static.generatedEmails))
   );
 
   server.listen(PORT, async () => {

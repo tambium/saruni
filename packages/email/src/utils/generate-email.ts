@@ -7,15 +7,15 @@ import { createEmail, saveEmail } from "../utils";
 export const generateEmail = async () => {
   try {
     const templates = await fs.readdir(
-      path.resolve(path.join(getPaths().static.base, `dist/email`))
+      path.resolve(getPaths().static.compiledEmails)
     );
 
     if (templates) {
-      await fs.ensureDir(`${getPaths().static.base}/generated/email`);
+      await fs.ensureDir(getPaths().static.generatedEmails);
 
       templates.forEach((template) => {
         const expts = require(path.join(
-          path.resolve(path.join(getPaths().static.base), `dist/email`),
+          path.resolve(getPaths().static.compiledEmails),
           template
         ));
         if (expts) {
