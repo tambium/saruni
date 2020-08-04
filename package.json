@@ -6,7 +6,9 @@
     "packages/*"
   ],
   "scripts": {
+    "prebuild": "yarn clean",
     "build": "lerna run build --npm-client=yarn",
+    "clean": "rm -rf packages/*/dist",
     "verdaccio:up": "rm -rf ./tasks/.verdaccio && ./tasks/run-local-npm",
     "verdaccio:publish": "yarn build && ./tasks/publish-local",
     "release": "yarn build && lerna publish from-package",
