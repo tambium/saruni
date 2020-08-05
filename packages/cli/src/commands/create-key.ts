@@ -1,11 +1,30 @@
+import aws from "aws-sdk";
 import chalk from "chalk";
-import execa from "execa";
 import fs from "fs-extra";
 import { CommandBuilder } from "yargs";
 
 interface CreateKeyParams {
   name: string;
 }
+
+const ec2 = new aws.EC2({
+  apiVersion: "2016-11-15",
+  region: process.env.AWS_REGION,
+});
+
+const createKey = async (
+  params: aws.EC2.CreateKeyPairRequest
+): Promise<aws.EC2.KeyPair> => {
+  return new Promise((resolve, reject) => {
+    ec2.createKeyPair(params, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+
+      return resolve(data);
+    });
+  });
+};
 
 export const command = "create-key";
 
@@ -31,16 +50,9 @@ export const handler = async (args: CreateKeyParams) => {
       process.exit(1);
     }
 
-    const { stdout } = await execa("aws", [
-      "ec2",
-      "create-key-pair",
-      "--key-name",
-      args.name,
-    ]);
+    const result = await createKey({ KeyName: args.name });
 
-    const { KeyMaterial } = JSON.parse(stdout);
-
-    await fs.writeFile(`${args.name}.pem`, KeyMaterial);
+    await fs.writeFile(`${args.name}.pem`, result.KeyMaterial);
 
     console.log(
       chalk.green(`Your key was created and saved as ${args.name}.pem`)
