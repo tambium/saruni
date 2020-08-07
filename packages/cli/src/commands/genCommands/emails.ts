@@ -1,32 +1,28 @@
 import execa from "execa";
+import { remove } from "fs-extra";
 import { getPaths } from "@saruni/internal";
 
 export const command = "emails";
 export const aliases = ["email"];
 
-export const desc =
-  "Generate HTML emails with inline CSS suitable for various clients.";
+export const desc = "Compile email templates with babel and tsc.";
 
 export const handler = async () => {
-  /** Compile emails to `dist/emails` directory. */
+  await remove(getPaths().static.generatedEmails);
+
   await execa(
     "babel",
-    [
-      "--out-dir",
-      "./dist",
-      "--extensions",
-      ".ts,.tsx",
-      "./src",
-      "--presets",
-      "@tambium/babel-preset,@tambium/babel-preset/react",
-    ],
+    ["--out-dir", "./generated", "--extensions", ".ts,.tsx", "./src"],
     {
-      cwd: getPaths().static.base,
+      cwd: getPaths().static.emails,
     }
   );
 
-  /** Inline CSS, stringify HTML and send to `generated/emails` directory. */
-  await execa("yarn", ["saruni-generate-emails"], {
-    cwd: getPaths().static.base,
-  });
+  await execa(
+    "tsc",
+    ["--outDir", "./generated", "--rootDir", "./src", "-p", "./tsconfig.json"],
+    {
+      cwd: getPaths().static.emails,
+    }
+  );
 };

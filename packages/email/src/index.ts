@@ -1,0 +1,1 @@
+export { createStatic } from "./utils";

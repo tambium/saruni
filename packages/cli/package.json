@@ -26,9 +26,7 @@
     "@babel/core": "^7.11.0",
     "@prisma/cli": "^2.4.0",
     "@saruni/config": "^0.0.4",
-    "@saruni/email": "^0.0.3",
     "@saruni/internal": "^0.0.9",
-    "@tambium/babel-preset": "^1.0.5",
     "axios": "^0.19.2",
     "chalk": "^4.0.0",
     "concurrently": "^5.2.0",
@@ -40,6 +38,7 @@
     "listr": "^0.14.3",
     "terminal-link": "^2.1.1",
     "tmp": "^0.2.1",
+    "typescript": "^3.9.7",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
