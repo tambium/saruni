@@ -15,8 +15,8 @@ const PATH_API_DIR_PRISMA_SCHEMA = "packages/api/prisma/schema.prisma";
 const PATH_API_DIR_SERVICES = "packages/api/src/services";
 const PATH_API_DIR_SRC = "packages/api/src";
 const PATH_STATIC_DIR = "packages/static";
-const PATH_STATIC_COMPILED_EMAILS = "packages/static/dist/emails";
-const PATH_STATIC_GENERATED_EMAILS = "packages/static/generated/emails";
+const PATH_STATIC_GENERATED_EMAILS = "packages/static/emails/generated";
+const PATH_STATIC_EMAILS_DIR = "packages/static/emails";
 const PATH_WEB_DIR = "packages/web";
 const PATH_WEB_DIR_COMPONENTS = "packages/web/src/components";
 const PATH_WEB_DIR_GRAPHQL = "packages/web/src/graphql";
@@ -83,7 +83,7 @@ export const getPaths = (BASE_DIR: string = getBaseDir()) => {
     },
     static: {
       base: path.join(BASE_DIR, PATH_STATIC_DIR),
-      compiledEmails: path.join(BASE_DIR, PATH_STATIC_COMPILED_EMAILS),
+      emails: path.join(BASE_DIR, PATH_STATIC_EMAILS_DIR),
       generatedEmails: path.join(BASE_DIR, PATH_STATIC_GENERATED_EMAILS),
     },
     web: {
