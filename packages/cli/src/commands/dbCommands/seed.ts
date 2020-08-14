@@ -7,6 +7,14 @@ export const command = "seed";
 
 export const desc = "Creates entities within the database.";
 
+// export const builder: CommandBuilder = (yargs) => {
+//   return yargs.option("stage", {
+//     default: "local",
+//     type: "string",
+//     choices: ["test", "prod", "dev", "local"],
+//   });
+// };
+
 babelRequireHook({
   extends: path.join(getPaths().api.base, ".babelrc.js"),
   extensions: [".js", ".ts"],
@@ -15,7 +23,26 @@ babelRequireHook({
   cache: false,
 });
 
-export const handler = async () => {
+export const handler = async (args: {
+  stage: "dev" | "test" | "prod" | "local";
+}) => {
+  switch (args.stage) {
+    case "dev":
+      process.env.DATABASE_URL = process.env.DATABASE_URL_DEV;
+      break;
+
+    case "prod":
+      process.env.DATABASE_URL = process.env.DATABASE_URL_PROD;
+      break;
+
+    case "test":
+      process.env.DATABASE_URL = process.env.DATABASE_URL_TEST;
+      break;
+
+    default:
+      break;
+  }
+
   const { seed } = require(getPaths().api.seedFile);
 
   try {
