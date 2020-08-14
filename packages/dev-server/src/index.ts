@@ -15,7 +15,14 @@ import requireDir from "require-dir";
 
 import { getPaths } from "@saruni/internal";
 
-const CORS_SAFE_LIST = ["http://localhost:3000", "http://localhost:4000"];
+const saruniJson = require(getPaths().saruni);
+
+const CORS_SAFE_LIST = [
+  saruniJson.devServerEndpoint.web,
+  saruniJson.devServerEndpoint.api,
+];
+
+process.env.STAGE = "local";
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, ".babelrc.js"),
