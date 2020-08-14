@@ -27,6 +27,7 @@
     "@prisma/cli": "^2.4.0",
     "@saruni/config": "^0.0.4",
     "@saruni/internal": "^0.0.9",
+    "aws-sdk": "^2.731.0",
     "axios": "^0.19.2",
     "chalk": "^4.0.0",
     "concurrently": "^5.2.0",
