@@ -21,8 +21,8 @@ interface TestContext {
   executeGraphql: (
     source: string,
     options?: {
-      variables: any;
-      context: any;
+      variables?: any;
+      context?: any;
     }
   ) => Promise<ExecutionResult>;
   setGraphQLContext: (context: any) => void;
@@ -38,7 +38,7 @@ export const createApiTestContext = (db: PrismaClient): TestContext => {
   afterAll(async () => {
     // await db.queryRaw(`DROP SCHEMA IF EXISTS "public" CASCADE`);
 
-    await db.disconnect();
+    await db.$disconnect();
   });
 
   async function executeGraphql(
