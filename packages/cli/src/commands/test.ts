@@ -22,9 +22,9 @@ export const handler = async () => {
 
     const { db } = require(getPaths().api.db);
 
-    await db.queryRaw(`DROP SCHEMA IF EXISTS "public" CASCADE`);
+    await db.$queryRaw(`DROP SCHEMA IF EXISTS "public" CASCADE`);
 
-    await db.disconnect();
+    await db.$disconnect();
 
     await execa("npx", ["prisma", "migrate", "up", "--experimental"], {
       cwd: getPaths().api.base,
