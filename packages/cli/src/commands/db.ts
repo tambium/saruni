@@ -6,5 +6,12 @@ export const aliases = ["database"];
 export const desc = "Database commands.";
 
 export const builder = (yargs: Argv) => {
-  yargs.commandDir("./dbCommands").demandCommand();
+  return yargs
+    .option("stage", {
+      default: "local",
+      type: "string",
+      choices: ["test", "prod", "dev", "local"],
+    })
+    .commandDir("./dbCommands")
+    .demandCommand();
 };
