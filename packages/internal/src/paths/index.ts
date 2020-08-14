@@ -60,6 +60,7 @@ export const getBaseDir = (configPath: string = getConfigPath()): string => {
 export const getPaths = (BASE_DIR: string = getBaseDir()) => {
   return {
     base: BASE_DIR,
+    saruni: path.join(BASE_DIR, CONFIG_FILE_NAME),
     env: path.join(BASE_DIR, DOT_ENV),
     sls: {
       base: path.join(BASE_DIR),
