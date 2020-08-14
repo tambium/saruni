@@ -7,11 +7,17 @@ const createCookie = (
   age = 60 ** 2 * 24 * 14,
   expires?: string
 ) => {
-  return `${name}=${value}; HttpOnly;${
-    process.env.DOMAIN
-      ? `Domain=${process.env.DOMAIN}; Secure; SameSite=None;`
-      : ""
-  } Max-Age=${age}; ${expires ? `Expires: ${expires};` : ""} path=/;`;
+  const domain = process.env.DOMAIN;
+  const stage = process.env.STAGE;
+
+  if (stage === "prod")
+    return `${name}=${value}; HttpOnly; Domain=${domain}; Secure; SameSite=Lax; Max-Age=${age}; ${
+      expires ? `Expires: ${expires};` : ""
+    } path=/;`;
+
+  return `${name}=${value}; HttpOnly; Max-Age=${age}; ${
+    expires ? `Expires: ${expires};` : ""
+  } path=/;`;
 };
 
 export const cookieManager = () => {
