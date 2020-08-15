@@ -8,11 +8,7 @@ const VERIFY_EMAIL = "verifyEmail";
 const SEND_EMAIL_VERIFICATION = "sendEmailVerification";
 
 export const getApiEndpoint = () => {
-  const baseUrl = process.env.API_ENDPOINT;
-
-  if (!baseUrl) {
-    return {};
-  }
+  const baseUrl = process.env.API_ENDPOINT || "http://localhost:4000";
 
   return {
     imageUpload: url(baseUrl, IMAGE_UPLOAD),
@@ -25,11 +21,7 @@ export const getApiEndpoint = () => {
 };
 
 export const getCustomApiEndpoint = (resource: string): string => {
-  const baseUrl = process.env.API_ENDPOINT;
-
-  if (!baseUrl) {
-    return "";
-  }
+  const baseUrl = process.env.API_ENDPOINT || "http://localhost:4000";
 
   return url(baseUrl, resource);
 };
