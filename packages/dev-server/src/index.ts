@@ -18,8 +18,8 @@ import { getPaths } from "@saruni/internal";
 const saruniJson = require(getPaths().saruni);
 
 const CORS_SAFE_LIST = [
-  saruniJson.devServerEndpoint.web,
-  saruniJson.devServerEndpoint.api,
+  `http://localhost:${saruniJson.devServerPort.web}`,
+  `http://localhost:${saruniJson.devServerPort.api}`,
 ];
 
 process.env.STAGE = "local";
@@ -257,6 +257,6 @@ app.all("/:functionName", async (req, res) => {
   }
 });
 
-app.listen(4000, () => {
-  console.log("server started...");
+app.listen(saruniJson.devServerPort.api, () => {
+  console.log(`API server started on port: ${saruniJson.devServerPort.api}`);
 });
