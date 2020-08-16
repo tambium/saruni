@@ -2548,6 +2548,11 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@tambium/prettier-config@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@tambium/prettier-config/-/prettier-config-1.0.2.tgz#3c96e80194de72f929d642e12dc5be8fb189aaf0"
+  integrity sha512-TkiI7W2RDMUlsqM5gJIEp/PMs8qtJHct3i2b2DdrbQqnHenGE2Hxpsbsf7MYWSkVv5RoPM6E+b4lM5Hiui7OvA==
+
 "@tambium/typescript-configs@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@tambium/typescript-configs/-/typescript-configs-1.0.2.tgz#f0a01aea2915bcb399a9e501df6e507f5aeaa315"
@@ -10583,6 +10588,11 @@ prepend-http@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
+
+prettier@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.5.tgz#d6d56282455243f2f92cc1716692c08aa31522d4"
+  integrity sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
 
 pretty-format@^25.2.1, pretty-format@^25.5.0:
   version "25.5.0"
