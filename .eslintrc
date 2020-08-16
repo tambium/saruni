@@ -1,0 +1,3 @@
+{
+  "extends": ["plugin:@tambium/typescript", "plugin:@tambium/prettier"]
+}

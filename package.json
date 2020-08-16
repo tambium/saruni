@@ -9,6 +9,7 @@
     "prebuild": "yarn clean",
     "build": "lerna run build --npm-client=yarn",
     "clean": "rm -rf packages/*/dist",
+    "lint:eslint": "eslint .",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "verdaccio:up": "rm -rf ./tasks/.verdaccio && ./tasks/run-local-npm",
@@ -24,7 +25,9 @@
     "@babel/plugin-transform-modules-commonjs": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
+    "@tambium/eslint-plugin": "^1.0.4",
     "@tambium/prettier-config": "^1.0.2",
+    "eslint": "^7.7.0",
     "lerna": "^3.20.2",
     "prettier": "^2.0.5",
     "typescript": "^3.9.3"
