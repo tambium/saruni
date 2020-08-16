@@ -1,1 +1,1 @@
-export { createStatic } from "./create-static";
+export { createStatic } from './create-static';

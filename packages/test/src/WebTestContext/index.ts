@@ -1,5 +1,5 @@
-import { RequestHandlersList } from "msw/lib/types/setupWorker/glossary";
-import { setupServer } from "msw/node";
+import { RequestHandlersList } from 'msw/lib/types/setupWorker/glossary';
+import { setupServer } from 'msw/node';
 
 export const createWebTestContext = (handlers: RequestHandlersList) => {
   const worker = setupServer(...handlers);

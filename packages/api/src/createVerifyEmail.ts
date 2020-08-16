@@ -3,9 +3,9 @@ import {
   APIGatewayProxyResultV2,
   Context,
   Callback,
-} from "aws-lambda";
-import { isBefore } from "date-fns";
-import createError from "http-errors";
+} from 'aws-lambda';
+import { isBefore } from 'date-fns';
+import createError from 'http-errors';
 
 interface VerifyEmailBody {
   body: {
@@ -22,10 +22,10 @@ interface JwtLambdaEvent {
 export type Handler<TEvent = any, TResult = any, TContext = {}> = (
   event: TEvent,
   context: Context & TContext,
-  callback: Callback<TResult>
+  callback: Callback<TResult>,
 ) => void | Promise<TResult>;
 
-type VerifyEmailEvent = Omit<APIGatewayEvent, "body"> &
+type VerifyEmailEvent = Omit<APIGatewayEvent, 'body'> &
   VerifyEmailBody &
   JwtLambdaEvent;
 
@@ -48,7 +48,7 @@ export const verifyEmail = ({ db }) => {
 
     if (!token && !code) {
       throw new createError.BadRequest(
-        "Either token or code must be sent with the request."
+        'Either token or code must be sent with the request.',
       );
     }
 
@@ -62,20 +62,20 @@ export const verifyEmail = ({ db }) => {
       if (token) {
         result = await db.emailVerification.findMany({
           where: { token, userId },
-          orderBy: { expiresAt: "desc" },
+          orderBy: { expiresAt: 'desc' },
           take: 1,
         });
 
         if (result.length === 0) {
           throw createError(
             400,
-            `Email could not be verified. Please request a new email.`
+            `Email could not be verified. Please request a new email.`,
           );
         }
       } else if (code) {
         result = await db.emailVerification.findMany({
           where: { code, userId },
-          orderBy: { expiresAt: "desc" },
+          orderBy: { expiresAt: 'desc' },
           take: 1,
         });
 

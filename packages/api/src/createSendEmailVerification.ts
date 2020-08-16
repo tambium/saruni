@@ -1,9 +1,9 @@
-import middy from "@middy/core";
-import { add } from "date-fns";
-import createError from "http-errors";
-import { v4 as uuidV4 } from "uuid";
+import middy from '@middy/core';
+import { add } from 'date-fns';
+import createError from 'http-errors';
+import { v4 as uuidV4 } from 'uuid';
 
-import { sendMail } from "./sendMail";
+import { sendMail } from './sendMail';
 
 const between = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min);
@@ -11,10 +11,10 @@ const between = (min: number, max: number): number => {
 
 export const sendEmailVerification = ({ db }) => {
   // we need to assume the user has the proper db structure for this lambda to work.
-  if (!db["emailVerification"]) {
+  if (!db['emailVerification']) {
     throw new Error(
       // TODO: Provide links to Prisma or / and Saruni docs how.
-      "Your database does not have an `EmailVerification` Model. Please create one."
+      'Your database does not have an `EmailVerification` Model. Please create one.',
     );
   }
 
@@ -40,14 +40,14 @@ export const sendEmailVerification = ({ db }) => {
         },
       });
     } catch {
-      throw createError(500, "Something went wrong.");
+      throw createError(500, 'Something went wrong.');
     }
 
     try {
       // TODO: extract this to a separate lambda using SNS
       sendMail(`http://localhost:3000/verify-email?token=${token}`, code);
     } catch {
-      throw createError(500, "Could not send email.");
+      throw createError(500, 'Could not send email.');
     }
 
     return {

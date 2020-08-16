@@ -1,19 +1,19 @@
 #!/usr/bin/env node
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import type { Request, Response } from "express";
-import babelRequireHook from "@babel/register";
-import bodyParser from "body-parser";
-import chalk from "chalk";
-import chokidar from "chokidar";
-import cors from "cors";
-import execa from "execa";
-import express from "express";
-import fs from "fs-extra";
-import path from "path";
-import qs from "qs";
-import requireDir from "require-dir";
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { Request, Response } from 'express';
+import babelRequireHook from '@babel/register';
+import bodyParser from 'body-parser';
+import chalk from 'chalk';
+import chokidar from 'chokidar';
+import cors from 'cors';
+import execa from 'execa';
+import express from 'express';
+import fs from 'fs-extra';
+import path from 'path';
+import qs from 'qs';
+import requireDir from 'require-dir';
 
-import { getPaths } from "@saruni/internal";
+import { getPaths } from '@saruni/internal';
 
 const saruniJson = require(getPaths().saruni);
 
@@ -22,30 +22,30 @@ const CORS_SAFE_LIST = [
   `http://localhost:${saruniJson.devServerPort.api}`,
 ];
 
-process.env.STAGE = "local";
+process.env.STAGE = 'local';
 
 babelRequireHook({
-  extends: path.join(getPaths().api.base, ".babelrc.js"),
-  extensions: [".js", ".ts"],
+  extends: path.join(getPaths().api.base, '.babelrc.js'),
+  extensions: ['.js', '.ts'],
   only: [path.resolve(getPaths().api.base)],
-  ignore: ["node_modules"],
+  ignore: ['node_modules'],
   cache: false,
 });
 
 const parseBody = (rawBody: string | Buffer) => {
-  if (typeof rawBody === "string") {
+  if (typeof rawBody === 'string') {
     return { body: rawBody, isBase64Encoded: false };
   }
 
   if (rawBody instanceof Buffer) {
-    return { body: rawBody.toString("base64"), isBase64Encoded: true };
+    return { body: rawBody.toString('base64'), isBase64Encoded: true };
   }
 
-  return { body: "", isBase64Encoded: false };
+  return { body: '', isBase64Encoded: false };
 };
 
 const lambdaEventForExpressRequest = (
-  request: Request
+  request: Request,
 ): APIGatewayProxyEvent => {
   return {
     httpMethod: request.method,
@@ -63,9 +63,9 @@ const lambdaEventForExpressRequest = (
 
 const expressResponseForLambdaResult = (
   expressResFn: Response,
-  lambdaResult: APIGatewayProxyResult
+  lambdaResult: APIGatewayProxyResult,
 ) => {
-  const { statusCode = 200, headers, body = "" } = lambdaResult;
+  const { statusCode = 200, headers, body = '' } = lambdaResult;
   if (headers) {
     Object.keys(headers).forEach((headerName) => {
       const headerValue: any = headers[headerName];
@@ -77,13 +77,13 @@ const expressResponseForLambdaResult = (
   // compatible with `JSON.stringify`, but the type definition specifices that
   // it must be a string.
   return expressResFn.end(
-    typeof body === "string" ? body : JSON.stringify(body)
+    typeof body === 'string' ? body : JSON.stringify(body),
   );
 };
 
 const expressResponseForLambdaError = (
   expressResFn: Response,
-  error: Error
+  error: Error,
 ) => {
   console.error(error);
 
@@ -94,14 +94,14 @@ const app = express();
 
 app.use(
   bodyParser.text({
-    type: ["text/*", "application/json", "multipart/form-data"],
-    limit: "50mb",
-  })
+    type: ['text/*', 'application/json', 'multipart/form-data'],
+    limit: '50mb',
+  }),
 );
 
-app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
-app.use(bodyParser.raw({ type: "*/*", limit: "50mb" }));
+app.use(bodyParser.raw({ type: '*/*', limit: '50mb' }));
 
 app.use(
   cors({
@@ -110,29 +110,29 @@ app.use(
       if (CORS_SAFE_LIST.indexOf(origin!) !== -1 || !origin) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS."));
+        callback(new Error('Not allowed by CORS.'));
       }
     },
-  })
+  }),
 );
 
 const graphqlWatcher = chokidar.watch(getPaths().web.graphql);
 
 let isGeneratingGraphqlFiles = false;
 
-graphqlWatcher.on("ready", () => {
-  graphqlWatcher.on("change", async () => {
+graphqlWatcher.on('ready', () => {
+  graphqlWatcher.on('change', async () => {
     try {
       if (!isGeneratingGraphqlFiles) {
         console.log(
-          chalk.green("GraphQL schema files changed. Generating new files...")
+          chalk.green('GraphQL schema files changed. Generating new files...'),
         );
 
         isGeneratingGraphqlFiles = true;
 
-        await execa("yarn", ["gen"], { cwd: getPaths().web.base });
+        await execa('yarn', ['gen'], { cwd: getPaths().web.base });
 
-        console.log(chalk.green("New files have been generated for apollo."));
+        console.log(chalk.green('New files have been generated for apollo.'));
       }
     } catch {
     } finally {
@@ -141,11 +141,11 @@ graphqlWatcher.on("ready", () => {
   });
 });
 
-const WATCHER_IGNORE_EXTENSIONS = [".db"];
+const WATCHER_IGNORE_EXTENSIONS = ['.db'];
 
 const apiWatcher = chokidar.watch(getPaths().api.base, {
   ignored: (file: string) =>
-    file.includes("node_modules") ||
+    file.includes('node_modules') ||
     WATCHER_IGNORE_EXTENSIONS.some((ext) => file.endsWith(ext)),
 });
 
@@ -157,10 +157,10 @@ const importFreshFunctions = async (functionsPath) => {
   const services = await fs.readdir(functionsPath);
 
   return services
-    .filter((item) => item !== ".keep")
+    .filter((item) => item !== '.keep')
     .map((item) => {
       return requireDir(path.resolve(functionsPath, item), {
-        extensions: [".js", ".ts"],
+        extensions: ['.js', '.ts'],
       });
     })
     .reduce((sum, item) => {
@@ -170,37 +170,37 @@ const importFreshFunctions = async (functionsPath) => {
 
 let functions;
 
-apiWatcher.on("ready", async () => {
+apiWatcher.on('ready', async () => {
   functions = await importFreshFunctions(path.resolve(getPaths().api.services));
 
-  apiWatcher.on("all", async (event) => {
+  apiWatcher.on('all', async (event) => {
     if (/add/.test(event)) {
-      console.log("New file added. Rebuilding...");
+      console.log('New file added. Rebuilding...');
       functions = await importFreshFunctions(
-        path.resolve(getPaths().api.services)
+        path.resolve(getPaths().api.services),
       );
-      console.log("New functions deployed.");
+      console.log('New functions deployed.');
     }
 
     if (/change/.test(event)) {
-      console.log("Code change detected. Rebuilding...");
+      console.log('Code change detected. Rebuilding...');
       functions = await importFreshFunctions(
-        path.resolve(getPaths().api.services)
+        path.resolve(getPaths().api.services),
       );
-      console.log("New functions deployed.");
+      console.log('New functions deployed.');
     }
 
     if (/unlink/.test(event)) {
-      console.log("Some file deleted. Rebuilding...");
+      console.log('Some file deleted. Rebuilding...');
       functions = await importFreshFunctions(
-        path.resolve(getPaths().api.services)
+        path.resolve(getPaths().api.services),
       );
-      console.log("New functions deployed.");
+      console.log('New functions deployed.');
     }
   });
 });
 
-app.get("/", (_, res) => {
+app.get('/', (_, res) => {
   res.send(`
   <html>
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
@@ -217,7 +217,7 @@ app.get("/", (_, res) => {
 
 const handlerCallback = (expressResFn: Response) => (
   error: Error,
-  lambdaResult: APIGatewayProxyResult
+  lambdaResult: APIGatewayProxyResult,
 ) => {
   if (error) {
     return expressResponseForLambdaError(expressResFn, error);
@@ -226,17 +226,17 @@ const handlerCallback = (expressResFn: Response) => (
 };
 
 function isPromise<T>(val: any): val is Promise<T> {
-  return val && val.then && typeof val.then === "function";
+  return val && val.then && typeof val.then === 'function';
 }
 
-app.all("/:functionName", async (req, res) => {
+app.all('/:functionName', async (req, res) => {
   const fn = functions[req.params.functionName];
 
   const event = lambdaEventForExpressRequest(req);
 
   const context = {};
 
-  if (fn && fn.handler && typeof fn.handler === "function") {
+  if (fn && fn.handler && typeof fn.handler === 'function') {
     try {
       const lambdaPromise = fn.handler(event, context, handlerCallback(res)) as
         | APIGatewayProxyResult
@@ -253,7 +253,7 @@ app.all("/:functionName", async (req, res) => {
   } else {
     res
       .status(500)
-      .send("`handler` is not a function or the file does not exist.");
+      .send('`handler` is not a function or the file does not exist.');
   }
 });
 

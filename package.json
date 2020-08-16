@@ -9,19 +9,24 @@
     "prebuild": "yarn clean",
     "build": "lerna run build --npm-client=yarn",
     "clean": "rm -rf packages/*/dist",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
     "verdaccio:up": "rm -rf ./tasks/.verdaccio && ./tasks/run-local-npm",
     "verdaccio:publish": "yarn build && ./tasks/publish-local",
     "release": "yarn build && lerna publish from-package",
     "version:patch": "lerna version patch"
   },
+  "prettier": "@tambium/prettier-config",
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-modules-commonjs": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
+    "@tambium/prettier-config": "^1.0.2",
     "lerna": "^3.20.2",
+    "prettier": "^2.0.5",
     "typescript": "^3.9.3"
-  },
-  "dependencies": {}
+  }
 }

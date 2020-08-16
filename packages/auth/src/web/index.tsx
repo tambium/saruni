@@ -1,21 +1,21 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { useApolloClient } from "@apollo/react-hooks";
-import { getApiEndpoint } from "@saruni/core";
-import { setContext } from "apollo-link-context";
-import jwtDecode from "jwt-decode";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { ApolloLink } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
-import fetch from "isomorphic-unfetch";
+import { useApolloClient } from '@apollo/react-hooks';
+import { getApiEndpoint } from '@saruni/core';
+import { setContext } from 'apollo-link-context';
+import jwtDecode from 'jwt-decode';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import fetch from 'isomorphic-unfetch';
 
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
-const isServer = () => typeof window === "undefined";
+const isServer = () => typeof window === 'undefined';
 
-const isDev = () => process.env.NODE_ENV !== "production";
+const isDev = () => process.env.NODE_ENV !== 'production';
 
 let accessToken: string | undefined = undefined;
 
@@ -51,10 +51,10 @@ export const refreshToken = async () => {
   if (!isTokenValid()) {
     try {
       const result = await fetch(getApiEndpoint().refreshToken, {
-        method: "POST",
-        credentials: "include",
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       });
 
@@ -82,7 +82,7 @@ export const authLink = setContext(async (_request, { headers }) => {
     return {
       headers: {
         ...headers,
-        authorization: token ? `bearer ${token}` : "",
+        authorization: token ? `bearer ${token}` : '',
       },
     };
   }
@@ -92,7 +92,7 @@ export const authLink = setContext(async (_request, { headers }) => {
 
 const httpLink = new HttpLink({
   uri: getApiEndpoint().graphql,
-  credentials: "include",
+  credentials: 'include',
   fetch,
 });
 
@@ -109,7 +109,7 @@ export const AuthContext = React.createContext<{
   signup: (...args: any[]) => void | Promise<void>;
   logout: (...args: any[]) => void | Promise<void>;
 }>({
-  defaultRedirect: "/",
+  defaultRedirect: '/',
   isAuthenticated: false,
   loading: false,
   login: () => {},
@@ -122,8 +122,8 @@ export const setToken = async (token) => {
     setAccessToken(token);
 
     await fetch(getApiEndpoint().cookieManager, {
-      method: "PUT",
-      credentials: "include",
+      method: 'PUT',
+      credentials: 'include',
       headers: {
         authorization: `bearer ${token}`,
       },
@@ -136,8 +136,8 @@ export const setToken = async (token) => {
 export const removeToken = async () => {
   try {
     await fetch(getApiEndpoint().cookieManager, {
-      method: "DELETE",
-      credentials: "include",
+      method: 'DELETE',
+      credentials: 'include',
       headers: {
         authorization: `bearer ${getAccessToken()}`,
       },
@@ -190,7 +190,7 @@ export const useAuth = () => {
 
 export const privateRoute = (
   Comp: React.FC,
-  options?: { redirectTo?: string }
+  options?: { redirectTo?: string },
 ) => {
   const PrivateRouteComponent: React.FC = (props) => {
     const router = useRouter();
@@ -232,10 +232,10 @@ export const useVerifyEmail = () => {
 
   const handler = React.useCallback(async (token) => {
     const fetchResult = await fetch(getApiEndpoint().verifyEmail, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({ token }),
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
         authorization: `bearer ${getAccessToken()}`,
       },
     });
@@ -260,11 +260,11 @@ export const useVerifyEmail = () => {
 
   const callbackWithCode = async (code: number) => {
     const fetchResult = await fetch(getApiEndpoint().verifyEmail, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({ code }),
       // credentials: "include",
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
         authorization: `bearer ${getAccessToken()}`,
       },
     });

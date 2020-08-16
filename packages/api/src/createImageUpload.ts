@@ -1,19 +1,19 @@
-import AWS from "aws-sdk";
-import createError from "http-errors";
-import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import httpErrorHandler from "@middy/http-error-handler";
-import validator from "@middy/validator";
-import jsonBodyParser from "@middy/http-json-body-parser";
-import { v4 as uuidV4 } from "uuid";
+import AWS from 'aws-sdk';
+import createError from 'http-errors';
+import middy from '@middy/core';
+import cors from '@middy/http-cors';
+import httpErrorHandler from '@middy/http-error-handler';
+import validator from '@middy/validator';
+import jsonBodyParser from '@middy/http-json-body-parser';
+import { v4 as uuidV4 } from 'uuid';
 
 import type {
   APIGatewayEvent,
   Handler,
   APIGatewayProxyResultV2,
-} from "aws-lambda";
+} from 'aws-lambda';
 
-import { credentialsOptions } from "./corsOptions";
+import { credentialsOptions } from './corsOptions';
 
 interface ImageUploadProperties {
   auth?: any;
@@ -24,7 +24,7 @@ interface ImageUploadBody {
   body: { image: string; pathPrefix?: string };
 }
 
-type ImageUploadEvent = Omit<APIGatewayEvent, "body"> & ImageUploadBody;
+type ImageUploadEvent = Omit<APIGatewayEvent, 'body'> & ImageUploadBody;
 
 type ImageUploadLambda = Handler<ImageUploadEvent, APIGatewayProxyResultV2>;
 
@@ -44,13 +44,13 @@ export const createImageUpload = ({
 
       // TODO: sanitize the image, check types
       body = Buffer.from(
-        image.replace(/^data:image\/\w+;base64,/, ""),
-        "base64"
+        image.replace(/^data:image\/\w+;base64,/, ''),
+        'base64',
       );
 
       contentType = image.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0];
 
-      extension = contentType.split("/")[1];
+      extension = contentType.split('/')[1];
 
       if (pathPrefix) {
         path = `${pathPrefix}/${uuidV4()}.${extension}`;
@@ -58,11 +58,11 @@ export const createImageUpload = ({
         path = `${uuidV4()}.${extension}`;
       }
     } catch {
-      throw createError(422, "Could not process image.");
+      throw createError(422, 'Could not process image.');
     }
 
-    if (!contentType.includes("image")) {
-      throw createError(422, "File provided is not an image.");
+    if (!contentType.includes('image')) {
+      throw createError(422, 'File provided is not an image.');
     }
 
     try {
@@ -72,7 +72,7 @@ export const createImageUpload = ({
           Bucket: bucketName,
           Key: path,
           ContentType: contentType,
-          ContentEncoding: "base64",
+          ContentEncoding: 'base64',
         })
         .promise();
 
@@ -81,11 +81,11 @@ export const createImageUpload = ({
       } = await new AWS.S3().getBucketLocation().promise();
 
       const region =
-        process.env.AWS_REGION || LocationConstraint || "eu-west-1";
+        process.env.AWS_REGION || LocationConstraint || 'eu-west-1';
 
       location = `https://${bucketName}.s3-${region}.amazonaws.com/${path}`;
     } catch {
-      createError(500, "Could not upload image.");
+      createError(500, 'Could not upload image.');
     }
 
     return {
@@ -97,24 +97,24 @@ export const createImageUpload = ({
     .use(
       validator({
         inputSchema: {
-          required: ["body"],
-          type: "object",
+          required: ['body'],
+          type: 'object',
           properties: {
             body: {
-              type: "object",
-              required: ["image"],
+              type: 'object',
+              required: ['image'],
               properties: {
                 image: {
-                  type: "string",
+                  type: 'string',
                 },
                 pathPrefix: {
-                  type: "string",
+                  type: 'string',
                 },
               },
             },
           },
         },
-      })
+      }),
     )
     .use(auth)
     .use(httpErrorHandler())
