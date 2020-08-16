@@ -1,13 +1,13 @@
 module.exports = {
   presets: [
-    "@babel/preset-typescript",
+    '@babel/preset-typescript',
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
         targets: {
           node: true,
         },
-        useBuiltIns: "usage",
+        useBuiltIns: 'usage',
         corejs: {
           version: 3.6,
           proposals: true,
@@ -16,10 +16,10 @@ module.exports = {
     ],
   ],
   plugins: [
-    ["@babel/plugin-proposal-class-properties", { loose: true }],
+    ['@babel/plugin-proposal-class-properties', { loose: true }],
 
     [
-      "@babel/plugin-transform-modules-commonjs",
+      '@babel/plugin-transform-modules-commonjs',
       {
         allowTopLevelThis: true,
       },

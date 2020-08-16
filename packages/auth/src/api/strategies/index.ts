@@ -1,3 +1,3 @@
-import { strategy as jsonwebtokenStrategy } from "./jsonwebtoken";
+import { strategy as jsonwebtokenStrategy } from './jsonwebtoken';
 
 export { jsonwebtokenStrategy };

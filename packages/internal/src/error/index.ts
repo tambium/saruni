@@ -1,2 +1,2 @@
-export { AuthenticationError } from "./authentication";
-export { AuthorizationError } from "./authorization";
+export { AuthenticationError } from './authentication';
+export { AuthorizationError } from './authorization';

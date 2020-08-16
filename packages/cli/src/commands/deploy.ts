@@ -1,19 +1,19 @@
-import { getPaths } from "@saruni/internal";
-import execa from "execa";
-import Listr from "listr";
-import { CommandBuilder } from "yargs";
+import { getPaths } from '@saruni/internal';
+import execa from 'execa';
+import Listr from 'listr';
+import { CommandBuilder } from 'yargs';
 
-export const command = "deploy";
+export const command = 'deploy';
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option("stage", {
-    default: "dev",
-    type: "string",
-    choices: ["dev", "prod"],
+  return yargs.option('stage', {
+    default: 'dev',
+    type: 'string',
+    choices: ['dev', 'prod'],
   });
 };
 
-export const desc = "deploys the services found in the services folder";
+export const desc = 'deploys the services found in the services folder';
 
 const saruniJson = require(getPaths().saruni);
 
@@ -25,24 +25,24 @@ export const handler = async (args) => {
         task: async () =>
           new Listr([
             {
-              title: "Clearing build directories",
+              title: 'Clearing build directories',
               task: async () => {
-                await execa("yarn", ["clean"], { cwd: getPaths().web.base });
+                await execa('yarn', ['clean'], { cwd: getPaths().web.base });
               },
             },
             {
-              title: "Building Next.js production build",
+              title: 'Building Next.js production build',
               task: async () => {
-                await execa("yarn", ["build"], {
+                await execa('yarn', ['build'], {
                   cwd: getPaths().web.base,
                   env: { STAGE: args.stage },
                 });
               },
             },
             {
-              title: "Creating a static build",
+              title: 'Creating a static build',
               task: async () => {
-                await execa("yarn", ["export"], {
+                await execa('yarn', ['export'], {
                   cwd: getPaths().web.base,
                   env: {
                     STAGE: args.stage,
@@ -51,39 +51,39 @@ export const handler = async (args) => {
               },
             },
             {
-              title: "Uploading to S3",
+              title: 'Uploading to S3',
               task: async () => {
                 await execa(
                   `AWS_PROFILE=${saruniJson.serverless[args.stage].awsProfile}`,
                   [
-                    "aws",
-                    "s3",
-                    "sync",
-                    "out",
+                    'aws',
+                    's3',
+                    'sync',
+                    'out',
                     `s3://${
                       saruniJson.serverless[args.stage].frontendS3Bucket
                     }`,
-                    "--delete",
+                    '--delete',
                   ],
-                  { cwd: getPaths().web.base }
+                  { cwd: getPaths().web.base },
                 );
               },
             },
             {
-              title: "Invalidating cloudfront cache",
+              title: 'Invalidating cloudfront cache',
               task: async () => {
                 await execa(
                   `AWS_PROFILE=${saruniJson.serverless[args.stage].awsProfile}`,
                   [
-                    "aws",
-                    "cloudfront",
-                    "create-invalidation",
-                    "--distribution-id",
-                    "E1W56ST7R2SIRK",
-                    "--paths",
-                    "*",
+                    'aws',
+                    'cloudfront',
+                    'create-invalidation',
+                    '--distribution-id',
+                    'E1W56ST7R2SIRK',
+                    '--paths',
+                    '*',
                   ],
-                  { cwd: getPaths().web.base }
+                  { cwd: getPaths().web.base },
                 );
               },
             },

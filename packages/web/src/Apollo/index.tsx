@@ -1,13 +1,13 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { ApolloProvider } from "@apollo/react-hooks";
-import { getApiEndpoint } from "@saruni/core";
-import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { ApolloLink } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
-import fetch from "isomorphic-unfetch";
+import { ApolloProvider } from '@apollo/react-hooks';
+import { getApiEndpoint } from '@saruni/core';
+import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import fetch from 'isomorphic-unfetch';
 
 interface GenerateApiProviderOptions {
   apolloClient?: ApolloClient<NormalizedCacheObject>;
@@ -20,7 +20,7 @@ export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
 
   const httpLink = new HttpLink({
     uri: getApiEndpoint().graphql,
-    credentials: "include",
+    credentials: 'include',
     fetch,
   });
 

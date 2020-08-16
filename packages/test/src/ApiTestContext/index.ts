@@ -1,16 +1,16 @@
-import { makeExecutableSchema } from "@saruni/api";
-import { getPaths } from "@saruni/internal";
-import { graphql, ExecutionResult } from "graphql";
-import path from "path";
-import type { PrismaClient } from "@prisma/client";
+import { makeExecutableSchema } from '@saruni/api';
+import { getPaths } from '@saruni/internal';
+import { graphql, ExecutionResult } from 'graphql';
+import path from 'path';
+import type { PrismaClient } from '@prisma/client';
 
-const babelRequireHook = require("@babel/register");
+const babelRequireHook = require('@babel/register');
 
 babelRequireHook({
-  extends: path.join(getPaths().api.base, ".babelrc.js"),
-  extensions: [".js", ".ts"],
+  extends: path.join(getPaths().api.base, '.babelrc.js'),
+  extensions: ['.js', '.ts'],
   only: [path.resolve(getPaths().api.graphql)],
-  ignore: ["node_modules"],
+  ignore: ['node_modules'],
   cache: false,
 });
 
@@ -23,7 +23,7 @@ interface TestContext {
     options?: {
       variables?: any;
       context?: any;
-    }
+    },
   ) => Promise<ExecutionResult>;
   setGraphQLContext: (context: any) => void;
 }
@@ -43,7 +43,7 @@ export const createApiTestContext = (db: PrismaClient): TestContext => {
 
   async function executeGraphql(
     source: string,
-    options?: { variables: any; context: any }
+    options?: { variables: any; context: any },
   ) {
     let extendedOptions: { variableValues?: any; contextValue } = {
       contextValue: mainContext,

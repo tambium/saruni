@@ -1,5 +1,5 @@
 export class AuthenticationError extends Error {
   constructor() {
-    super("Not authenticated");
+    super('Not authenticated');
   }
 }

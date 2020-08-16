@@ -1,12 +1,12 @@
-import type { APIGatewayEvent } from "aws-lambda";
-import cookie from "cookie";
-import createError from "http-errors";
-import { sign, verify } from "jsonwebtoken";
+import type { APIGatewayEvent } from 'aws-lambda';
+import cookie from 'cookie';
+import createError from 'http-errors';
+import { sign, verify } from 'jsonwebtoken';
 
 export const refreshToken = () => {
   if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
     throw new Error(
-      "Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`"
+      'Please provide `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`',
     );
   }
 
@@ -16,7 +16,7 @@ export const refreshToken = () => {
     try {
       const { headers } = event;
 
-      const header = headers["Cookie"] || headers["cookie"];
+      const header = headers['Cookie'] || headers['cookie'];
 
       const { jid } = cookie.parse(header);
 
@@ -32,7 +32,7 @@ export const refreshToken = () => {
       body: JSON.stringify({
         jwt: sign(
           { ...rest, exp: Math.floor(Date.now() / 1000) + 60 * 10 },
-          process.env.ACCESS_TOKEN_SECRET
+          process.env.ACCESS_TOKEN_SECRET,
         ),
       }),
     };
