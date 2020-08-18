@@ -24,7 +24,7 @@
   "dependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.0",
-    "@prisma/cli": "^2.4.0",
+    "@prisma/cli": "2.5.0",
     "@saruni/config": "^0.0.6",
     "@saruni/internal": "^0.0.11",
     "aws-sdk": "^2.731.0",
