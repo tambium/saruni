@@ -24,7 +24,7 @@ const PATH_WEB_DIR_LAYOUTS = 'packages/web/src/layouts';
 const PATH_WEB_DIR_PAGES = 'packages/web/src/pages';
 const PATH_WEB_DIR_SRC = 'packages/web/src';
 const PATH_WEB_DIR_VIEWS = 'packages/web/src/views';
-const PATH_SERVERLESS_DIR_RESOURCES = 'resource';
+const PATH_SERVERLESS_DIR_RESOURCES = 'packages/api/src/resources';
 
 async function filterSaruniDepsFromPackageJson(path) {
   const { dependencies } = JSON.parse(await readFile(path, 'utf8'));
