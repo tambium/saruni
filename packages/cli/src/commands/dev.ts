@@ -1,21 +1,21 @@
-import concurrently from "concurrently";
-import { getPaths } from "@saruni/internal";
-import { CommandBuilder } from "yargs";
+import concurrently from 'concurrently';
+import { getPaths } from '@saruni/internal';
+import { CommandBuilder } from 'yargs';
 
 const saruniJson = require(getPaths().saruni);
 
-export const command = "dev";
+export const command = 'dev';
 
-export const desc = "Start development servers.";
+export const desc = 'Start development servers.';
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option("cloud", { default: false, type: "boolean" });
+  return yargs.option('cloud', { default: false, type: 'boolean' });
 };
 
 export const handler = async (args: { cloud: boolean }) => {
   let nextCommand = `yarn dev`;
 
-  if (saruniJson.devServerPort.web !== "3000") {
+  if (saruniJson.devServerPort.web !== '3000') {
     nextCommand = `npx next dev -p ${saruniJson.devServerPort.web}`;
   }
 
@@ -29,7 +29,7 @@ export const handler = async (args: { cloud: boolean }) => {
 
   return await concurrently([
     {
-      command: "yarn ds",
+      command: 'yarn ds',
     },
     {
       command: `cd ${getPaths().web.base} && ${nextCommand}`,

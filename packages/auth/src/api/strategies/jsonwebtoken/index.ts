@@ -1,3 +1,3 @@
-import { strategy } from "./stategy";
+import { strategy } from './stategy';
 
 export { strategy };

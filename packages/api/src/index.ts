@@ -1,6 +1,6 @@
-export * from "apollo-server-lambda";
+export * from 'apollo-server-lambda';
 
-export * from "./createSendEmailVerification";
-export * from "./createVerifyEmail";
-export * from "./createImageUpload";
-export * from "./corsOptions";
+export * from './createSendEmailVerification';
+export * from './createVerifyEmail';
+export * from './createImageUpload';
+export * from './corsOptions';

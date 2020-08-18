@@ -1,9 +1,9 @@
-import type { Argv } from "yargs";
+import type { Argv } from 'yargs';
 
-export const command = "migrate <command>";
+export const command = 'migrate <command>';
 
-export const desc = "Migration commands.";
+export const desc = 'Migration commands.';
 
 export const builder = (yargs: Argv) => {
-  yargs.commandDir("./migrateCommands").demandCommand();
+  yargs.commandDir('./migrateCommands').demandCommand();
 };

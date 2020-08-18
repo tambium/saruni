@@ -1,19 +1,19 @@
-import aws from "aws-sdk";
-import chalk from "chalk";
-import fs from "fs-extra";
-import { CommandBuilder } from "yargs";
+import aws from 'aws-sdk';
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import { CommandBuilder } from 'yargs';
 
 interface CreateKeyParams {
   name: string;
 }
 
 const ec2 = new aws.EC2({
-  apiVersion: "2016-11-15",
+  apiVersion: '2016-11-15',
   region: process.env.AWS_REGION,
 });
 
 const createKey = async (
-  params: aws.EC2.CreateKeyPairRequest
+  params: aws.EC2.CreateKeyPairRequest,
 ): Promise<aws.EC2.KeyPair> => {
   return new Promise((resolve, reject) => {
     ec2.createKeyPair(params, (err, data) => {
@@ -26,13 +26,13 @@ const createKey = async (
   });
 };
 
-export const command = "create-key";
+export const command = 'create-key';
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option("name", { default: "bastion-key", type: "string" });
+  return yargs.option('name', { default: 'bastion-key', type: 'string' });
 };
 
-export const desc = "creates a key with aws that can be used in ssh sessions";
+export const desc = 'creates a key with aws that can be used in ssh sessions';
 
 export const handler = async (args: CreateKeyParams) => {
   try {
@@ -43,8 +43,8 @@ export const handler = async (args: CreateKeyParams) => {
       console.log(chalk.red(`The file ${args.name}.pem already exists.`));
       console.log(
         chalk.yellow(
-          "It is advised to backup this file then either delete or remove it."
-        )
+          'It is advised to backup this file then either delete or remove it.',
+        ),
       );
 
       process.exit(1);
@@ -55,7 +55,7 @@ export const handler = async (args: CreateKeyParams) => {
     await fs.writeFile(`${args.name}.pem`, result.KeyMaterial);
 
     console.log(
-      chalk.green(`Your key was created and saved as ${args.name}.pem`)
+      chalk.green(`Your key was created and saved as ${args.name}.pem`),
     );
   } catch (e) {
     console.log(e);
