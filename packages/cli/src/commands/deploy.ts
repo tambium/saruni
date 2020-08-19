@@ -1,7 +1,8 @@
 import { getPaths } from '@saruni/internal';
 import execa from 'execa';
-import path from 'path';
 import Listr from 'listr';
+import path from 'path';
+import rimraf from 'rimraf';
 import { CommandBuilder } from 'yargs';
 
 export const command = 'deploy';
@@ -15,7 +16,7 @@ export const builder: CommandBuilder = (yargs) => {
     })
     .option('service', {
       default: 'graphql',
-      choices: ['resources', 'graphql', 'auth', 'web'],
+      choices: ['resources', 'graphql', 'auth', 'web', 'domain'],
     });
 };
 
@@ -28,24 +29,52 @@ export const handler = async (args) => {
   const profile = saruniJson.serverless[args.stage].awsProfile;
 
   if (args.service === 'resources') {
-    await execa('sls', ['--aws-profile', profile, 'deploy'], {
-      cwd: path.join(getPaths().base, 'packages/api/src/resources'),
-      stdio: 'inherit',
-    });
+    await execa(
+      'sls',
+      ['--aws-profile', profile, 'deploy', `--stage=${args.stage}`],
+      {
+        cwd: path.join(getPaths().base, 'packages/api/src/resources'),
+        stdio: 'inherit',
+      },
+    );
+  }
+
+  if (args.service === 'domain') {
+    await execa(
+      'sls',
+      [
+        '--aws-profile',
+        saruniJson.serverless.prod.awsProfile,
+        'create_domain',
+        `--stage=prod`,
+      ],
+      {
+        cwd: path.join(getPaths().base, 'packages/api/src/services/graphql'),
+        stdio: 'inherit',
+      },
+    );
   }
 
   if (args.service === 'graphql') {
-    await execa('sls', ['--aws-profile', profile, 'deploy'], {
-      cwd: path.join(getPaths().base, 'packages/api/src/services/graphql'),
-      stdio: 'inherit',
-    });
+    await execa(
+      'sls',
+      ['--aws-profile', profile, 'deploy', `--stage=${args.stage}`],
+      {
+        cwd: path.join(getPaths().base, 'packages/api/src/services/graphql'),
+        stdio: 'inherit',
+      },
+    );
   }
 
   if (args.service === 'auth') {
-    await execa('sls', ['--aws-profile', profile, 'deploy'], {
-      cwd: path.join(getPaths().base, 'packages/api/src/services/auth'),
-      stdio: 'inherit',
-    });
+    await execa(
+      'sls',
+      ['--aws-profile', profile, 'deploy', `--stage=${args.stage}`],
+      {
+        cwd: path.join(getPaths().base, 'packages/api/src/services/auth'),
+        stdio: 'inherit',
+      },
+    );
   }
 
   if (args.service === 'web') {
@@ -55,12 +84,12 @@ export const handler = async (args) => {
           title: `Preparing frontend`,
           task: async () =>
             new Listr([
-              // {
-              //   title: 'Clearing build directories',
-              //   task: async () => {
-              //     await execa('yarn', ['clean'], { cwd: getPaths().web.base });
-              //   },
-              // },
+              {
+                title: 'Clearing build directories',
+                task: () => {
+                  rimraf.sync(path.join(getPaths().web.base, 'out'));
+                },
+              },
               {
                 title: 'Building Next.js production build',
                 task: async () => {
@@ -101,26 +130,45 @@ export const handler = async (args) => {
                   );
                 },
               },
-              // {
-              //   title: 'Invalidating cloudfront cache',
-              //   task: async () => {
-              //     await execa(
-              //       `AWS_PROFILE=${
-              //         saruniJson.serverless[args.stage].awsProfile
-              //       }`,
-              //       [
-              //         'aws',
-              //         'cloudfront',
-              //         'create-invalidation',
-              //         '--distribution-id',
-              //         'E1W56ST7R2SIRK',
-              //         '--paths',
-              //         '*',
-              //       ],
-              //       { cwd: getPaths().web.base },
-              //     );
-              // },
-              // },
+              {
+                title: 'Invalidating cloudfront cache',
+                task: async () => {
+                  await execa(
+                    'aws',
+                    [
+                      'cloudfront',
+                      '--profile',
+                      saruniJson.serverless[args.stage].awsProfile,
+                      'create-invalidation',
+                      '--distribution-id',
+                      saruniJson.serverless[args.state].distId,
+                      '--paths',
+                      '*',
+                    ],
+                    { cwd: getPaths().web.base },
+                  );
+                },
+              },
+              {
+                title: 'Invalidating cloudfront cache',
+                task: async () => {
+                  await execa(
+                    `AWS_PROFILE=${
+                      saruniJson.serverless[args.stage].awsProfile
+                    }`,
+                    [
+                      'aws',
+                      'cloudfront',
+                      'create-invalidation',
+                      '--distribution-id',
+                      'E1W56ST7R2SIRK',
+                      '--paths',
+                      '*',
+                    ],
+                    { cwd: getPaths().web.base },
+                  );
+                },
+              },
             ]),
         },
       ]).run();
