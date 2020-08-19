@@ -62,6 +62,8 @@ export const handler = async (args: CreateKeyParams) => {
 
     await fs.writeFile(path.join(getPaths().base, fileName), KeyMaterial);
 
+    await fs.chmod(path.join(getPaths().base, fileName), '700');
+
     console.log(chalk.green(`Your key was created and saved as ${fileName}`));
   } catch (e) {
     console.log(e);
