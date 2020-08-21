@@ -181,7 +181,7 @@ new Listr([
     console.log(`Success! We've created your app in ${newAppDir}`);
     console.log();
     console.log(
-      'Inside that directory you can run `yarn dev` to start the development server.',
+      "Inside that directory you can run `yarn sr dev` to start the development server."
     );
   })
   .catch((error) => {

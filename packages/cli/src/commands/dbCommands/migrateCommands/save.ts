@@ -12,7 +12,7 @@ export const handler = async () => {
     'npx',
     ['prisma', 'migrate', 'save', '--experimental'],
     {
-      cwd: getPaths().api.base,
+      cwd: getPaths().api.prisma,
       stdio: 'inherit',
     },
   );

@@ -1,6 +1,6 @@
 {
   "name": "@saruni/test",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "files": [
     "dist"
   ],
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@babel/register": "^7.10.5",
-    "@prisma/client": "^2.4.0",
+    "@prisma/client": "^2.5.0",
     "@saruni/api": "latest",
-    "@saruni/internal": "^0.0.10",
+    "@saruni/internal": "^0.0.12",
     "msw": "^0.19.5"
   },
   "devDependencies": {

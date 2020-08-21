@@ -1,61 +1,69 @@
-import aws from 'aws-sdk';
 import chalk from 'chalk';
+import path from 'path';
 import fs from 'fs-extra';
 import { CommandBuilder } from 'yargs';
 
+import { getPaths } from '@saruni/internal';
+import execa from 'execa';
+
 interface CreateKeyParams {
   name: string;
+  stage: string;
 }
-
-const ec2 = new aws.EC2({
-  apiVersion: '2016-11-15',
-  region: process.env.AWS_REGION,
-});
-
-const createKey = async (
-  params: aws.EC2.CreateKeyPairRequest,
-): Promise<aws.EC2.KeyPair> => {
-  return new Promise((resolve, reject) => {
-    ec2.createKeyPair(params, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(data);
-    });
-  });
-};
 
 export const command = 'create-key';
 
 export const builder: CommandBuilder = (yargs) => {
-  return yargs.option('name', { default: 'bastion-key', type: 'string' });
+  return yargs
+    .option('stage', {
+      default: 'dev',
+      type: 'string',
+      choices: ['prod', 'dev'],
+    })
+    .option('name', { default: 'bastion-key', type: 'string' });
 };
 
 export const desc = 'creates a key with aws that can be used in ssh sessions';
 
 export const handler = async (args: CreateKeyParams) => {
+  const saruniJson = require(getPaths().saruni);
+
+  const name = `${args.stage}-${args.name}`;
+  const fileName = `${name}.pem`;
+
+  const region = saruniJson.serverless[args.stage].region;
+  const profile = saruniJson.serverless[args.stage].awsProfile;
+
   try {
     const hasKey = await fs.pathExists(`${args.name}.pem`);
 
     if (hasKey) {
-      console.log(chalk.red(`The file ${args.name}.pem already exists.`));
+      console.log(chalk.red(`The file ${fileName}.pem already exists.`));
       console.log(
-        chalk.yellow(
-          'It is advised to backup this file then either delete or remove it.',
-        ),
+        chalk.yellow('It is advised to backup this file then delete it.'),
       );
 
       process.exit(1);
     }
 
-    const result = await createKey({ KeyName: args.name });
+    const { stdout } = await execa(`aws`, [
+      'ec2',
+      'create-key-pair',
+      '--profile',
+      profile,
+      '--region',
+      region,
+      '--key-name',
+      name,
+    ]);
 
-    await fs.writeFile(`${args.name}.pem`, result.KeyMaterial);
+    const { KeyMaterial } = JSON.parse(stdout);
 
-    console.log(
-      chalk.green(`Your key was created and saved as ${args.name}.pem`),
-    );
+    await fs.writeFile(path.join(getPaths().base, fileName), KeyMaterial);
+
+    await fs.chmod(path.join(getPaths().base, fileName), '700');
+
+    console.log(chalk.green(`Your key was created and saved as ${fileName}`));
   } catch (error) {
     console.log(error);
   }
