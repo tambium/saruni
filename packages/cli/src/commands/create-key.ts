@@ -36,8 +36,7 @@ export const desc = 'creates a key with aws that can be used in ssh sessions';
 
 export const handler = async (args: CreateKeyParams) => {
   try {
-    // @ts-ignore
-    const hasKey = (await fs.exists(`${args.name}.pem`)) as boolean;
+    const hasKey = await fs.pathExists(`${args.name}.pem`);
 
     if (hasKey) {
       console.log(chalk.red(`The file ${args.name}.pem already exists.`));
@@ -57,7 +56,7 @@ export const handler = async (args: CreateKeyParams) => {
     console.log(
       chalk.green(`Your key was created and saved as ${args.name}.pem`),
     );
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };

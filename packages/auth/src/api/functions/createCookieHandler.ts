@@ -1,5 +1,6 @@
 import type { APIGatewayEvent } from 'aws-lambda';
 import { sign } from 'jsonwebtoken';
+import createError from 'http-errors';
 
 const createCookie = (
   name: string,
@@ -28,7 +29,7 @@ export const cookieManager = () => {
   }
 
   return async (event: APIGatewayEvent, context) => {
-    let payload = context.payload;
+    const payload = context.payload;
 
     if (event.httpMethod === 'PUT') {
       const { exp, iat, ...rest } = payload;
@@ -60,16 +61,7 @@ export const cookieManager = () => {
         },
       };
     }
+
+    throw createError(405, `Request method not supported.`);
   };
-  return;
 };
-// .use(jwtMiddleware())
-// .use(httpErrorHandler())
-// .use(
-//   cors({
-//     credentials: true,
-//     // headers:
-//     // "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent",
-//     origin: "http://localhost:3000",
-//   })
-// );

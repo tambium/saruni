@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from 'path';
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import type { Request, Response } from 'express';
 import babelRequireHook from '@babel/register';
@@ -9,7 +10,6 @@ import cors from 'cors';
 import execa from 'execa';
 import express from 'express';
 import fs from 'fs-extra';
-import path from 'path';
 import qs from 'qs';
 import requireDir from 'require-dir';
 
@@ -57,7 +57,8 @@ const lambdaEventForExpressRequest = (
         sourceIp: request.ip,
       },
     },
-    ...parseBody(request.body), // adds `body` and `isBase64Encoded`
+    // adds `body` and `isBase64Encoded`
+    ...parseBody(request.body),
   } as APIGatewayProxyEvent;
 };
 
@@ -108,9 +109,9 @@ app.use(
     credentials: true,
     origin: (origin, callback) => {
       if (CORS_SAFE_LIST.indexOf(origin!) !== -1 || !origin) {
-        callback(null, true);
+        return callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS.'));
+        return callback(new Error('Not allowed by CORS.'));
       }
     },
   }),
@@ -134,7 +135,8 @@ graphqlWatcher.on('ready', () => {
 
         console.log(chalk.green('New files have been generated for apollo.'));
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
     } finally {
       isGeneratingGraphqlFiles = false;
     }
@@ -200,7 +202,7 @@ apiWatcher.on('ready', async () => {
   });
 });
 
-app.get('/', (_, res) => {
+app.get('/', (_req, res) => {
   res.send(`
   <html>
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;" >
@@ -247,8 +249,8 @@ app.all('/:functionName', async (req, res) => {
 
         expressResponseForLambdaResult(res, result);
       }
-    } catch (e) {
-      expressResponseForLambdaError(res, e);
+    } catch (error) {
+      expressResponseForLambdaError(res, error);
     }
   } else {
     res

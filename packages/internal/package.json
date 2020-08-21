@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "findup-sync": "^4.0.0"
+    "findup-sync": "^4.0.0",
+    "fs-extra": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.0.5",

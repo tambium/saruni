@@ -19,7 +19,8 @@ interface JwtLambdaEvent {
     userId: number;
   };
 }
-export type Handler<TEvent = any, TResult = any, TContext = {}> = (
+
+export type Handler<TEvent, TResult, TContext> = (
   event: TEvent,
   context: Context & TContext,
   callback: Callback<TResult>,

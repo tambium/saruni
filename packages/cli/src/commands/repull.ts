@@ -1,7 +1,7 @@
+import path from 'path';
 import execa from 'execa';
 import fs from 'fs-extra';
 import Listr from 'listr';
-import path from 'path';
 
 import { getPaths, getSaruniPackages } from '@saruni/internal';
 
@@ -103,7 +103,7 @@ export const handler = async () => {
           ]),
       },
     ]).run();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };

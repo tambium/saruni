@@ -1,8 +1,8 @@
+import path from 'path';
 import babelRequireHook from '@babel/register';
 import { getPaths } from '@saruni/internal';
 import execa from 'execa';
 import { run } from 'jest';
-import path from 'path';
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, '.babelrc.js'),
@@ -37,7 +37,7 @@ export const handler = async () => {
     });
 
     await run([`--config=${require.resolve('@saruni/config/dist/index.js')}`]);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };
