@@ -20,14 +20,14 @@ export const handler = async (args: { cloud: boolean }) => {
   }
 
   if (args.cloud === true) {
-    return await concurrently([
+    return concurrently([
       {
         command: `cd ${getPaths().web.base} && USE_CLOUD=true ${nextCommand}`,
       },
     ]);
   }
 
-  return await concurrently([
+  return concurrently([
     {
       command: 'yarn ds',
     },

@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import React from 'react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { getApiEndpoint } from '@saruni/core';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -16,8 +15,6 @@ interface GenerateApiProviderOptions {
 export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
   const { apolloClient } = options ?? {};
 
-  let client: ApolloClient<NormalizedCacheObject>;
-
   const httpLink = new HttpLink({
     uri: getApiEndpoint().graphql,
     credentials: 'include',
@@ -29,7 +26,7 @@ export const generateApiProvider = (options?: GenerateApiProviderOptions) => {
     console.log(networkError);
   });
 
-  client = new ApolloClient({
+  const client = new ApolloClient({
     ssrMode: false,
     link: ApolloLink.from([ApolloLink.from([errorLink, httpLink])]),
     cache: new InMemoryCache(),

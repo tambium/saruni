@@ -19,7 +19,7 @@ export const handler = async () => {
         },
       },
     ]).run();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };

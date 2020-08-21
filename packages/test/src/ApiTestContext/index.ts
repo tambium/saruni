@@ -1,10 +1,9 @@
+import path from 'path';
+import babelRequireHook from '@babel/register';
 import { makeExecutableSchema } from '@saruni/api';
 import { getPaths } from '@saruni/internal';
 import { graphql, ExecutionResult } from 'graphql';
-import path from 'path';
 import type { PrismaClient } from '@prisma/client';
-
-const babelRequireHook = require('@babel/register');
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, '.babelrc.js'),
@@ -31,7 +30,7 @@ interface TestContext {
 export const createApiTestContext = (db: PrismaClient): TestContext => {
   let mainContext = {};
 
-  let schema = makeExecutableSchema({ typeDefs, resolvers });
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
 
   beforeAll(async () => {});
 
@@ -45,7 +44,7 @@ export const createApiTestContext = (db: PrismaClient): TestContext => {
     source: string,
     options?: { variables: any; context: any },
   ) {
-    let extendedOptions: { variableValues?: any; contextValue } = {
+    const extendedOptions: { variableValues?: any; contextValue } = {
       contextValue: mainContext,
     };
 

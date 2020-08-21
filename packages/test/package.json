@@ -15,7 +15,8 @@
     "build": "rm -rf dist && tsc"
   },
   "dependencies": {
-    "@prisma/client": "2.5.0",
+    "@babel/register": "^7.10.5",
+    "@prisma/client": "^2.5.0",
     "@saruni/api": "latest",
     "@saruni/internal": "^0.0.12",
     "msw": "^0.19.5"

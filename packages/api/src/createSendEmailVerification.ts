@@ -10,15 +10,14 @@ const between = (min: number, max: number): number => {
 };
 
 export const sendEmailVerification = ({ db }) => {
-  // we need to assume the user has the proper db structure for this lambda to work.
-  if (!db['emailVerification']) {
+  // Check for the existence of required DB tables.
+  if (!db.emailVerification) {
     throw new Error(
-      // TODO: Provide links to Prisma or / and Saruni docs how.
       'Your database does not have an `EmailVerification` Model. Please create one.',
     );
   }
 
-  let handler = async (_event, context) => {
+  const handler = async (_event, context) => {
     const token = uuidV4();
 
     const code = between(0, 9999);
@@ -33,7 +32,6 @@ export const sendEmailVerification = ({ db }) => {
           code,
           user: {
             connect: {
-              // @ts-ignore
               id: context.payload.userId,
             },
           },
@@ -44,7 +42,6 @@ export const sendEmailVerification = ({ db }) => {
     }
 
     try {
-      // TODO: extract this to a separate lambda using SNS
       sendMail(`http://localhost:3000/verify-email?token=${token}`, code);
     } catch {
       throw createError(500, 'Could not send email.');
@@ -58,7 +55,3 @@ export const sendEmailVerification = ({ db }) => {
 
   return middy(handler);
 };
-// .use(jsonBodyParser())
-// .use(auth)
-// .use(httpErrorHandler())
-// .use(cors(baseOptions));

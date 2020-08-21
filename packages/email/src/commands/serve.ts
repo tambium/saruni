@@ -1,7 +1,7 @@
 #!/usr/bin/env node
+import path from 'path';
 import express from 'express';
 import chalk from 'chalk';
-import path from 'path';
 import terminalLink from 'terminal-link';
 import { getPaths } from '@saruni/internal';
 

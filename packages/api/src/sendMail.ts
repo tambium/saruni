@@ -5,10 +5,10 @@ import aws from 'aws-sdk';
 
 async function setupNodeMailer() {
   // const nodemailer = require("nodemailer");
-  let testAccount = await nodemailer.createTestAccount();
+  const testAccount = await nodemailer.createTestAccount();
 
   // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     secure: false,
@@ -23,8 +23,6 @@ async function setupNodeMailer() {
 export async function sendTemplatedEmail(
   template: aws.SES.SendTemplatedEmailRequest,
 ) {
-  const {} = template;
-
   const environment = process.env.NODE_ENV;
 
   if (environment !== 'production') {
@@ -33,29 +31,36 @@ export async function sendTemplatedEmail(
 }
 
 export async function sendMail(url: string, code?: number) {
-  const nodemailer = require('nodemailer');
   // async..await is not allowed in global scope, must use a wrapper
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
+  const testAccount = await nodemailer.createTestAccount();
 
   // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
-    secure: false, // true for 465, false for other ports
+    // true for 465, false for other ports
+    secure: false,
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      // generated ethereal user
+      user: testAccount.user,
+      // generated ethereal password
+      pass: testAccount.pass,
     },
   });
 
   // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: 'bar@example.com, baz@example.com', // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world?', // plain text body
+  const info = await transporter.sendMail({
+    // sender address
+    from: '"Fred Foo 👻" <foo@example.com>',
+    // list of receivers
+    to: 'bar@example.com, baz@example.com',
+    // Subject line
+    subject: 'Hello',
+    // plain text body
+    text: 'Hello world?',
+    // html body
     html: `<b>Hello world?
     
     
@@ -66,7 +71,7 @@ export async function sendMail(url: string, code?: number) {
     
     
     
-    </b>`, // html body
+    </b>`,
   });
 
   console.log('Message sent: %s', info.messageId);

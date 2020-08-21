@@ -1,7 +1,7 @@
+import path from 'path';
 import babelRequireHook from '@babel/register';
 import { getPaths } from '@saruni/internal';
 import { magenta } from 'chalk';
-import path from 'path';
 
 export const command = 'seed';
 

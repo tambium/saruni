@@ -1,9 +1,9 @@
+import path from 'path';
 import axios from 'axios';
 import decompress from 'decompress';
 import execa from 'execa';
 import fs from 'fs-extra';
 import Listr from 'listr';
-import path from 'path';
 import tmp from 'tmp';
 
 import { getPaths } from '@saruni/internal';
@@ -114,7 +114,7 @@ export const handler = async () => {
         },
       },
     ]).run();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };

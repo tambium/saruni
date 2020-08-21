@@ -17,7 +17,7 @@ const isServer = () => typeof window === 'undefined';
 
 const isDev = () => process.env.NODE_ENV !== 'production';
 
-let accessToken: string | undefined = undefined;
+let accessToken: string | undefined;
 
 export const getAccessToken = () => {
   return accessToken;
@@ -42,12 +42,14 @@ const isTokenValid = () => {
     if (Date.now() < exp * 1000) {
       isTokenValid = true;
     }
-  } catch {}
+  } catch (error) {
+    throw new Error(`Unable to decode JWT token.`);
+  }
 
   return isTokenValid;
 };
 
-export const refreshToken = async () => {
+export const handleTokenRefresh = async () => {
   if (!isTokenValid()) {
     try {
       const result = await fetch(getApiEndpoint().refreshToken, {
@@ -61,12 +63,14 @@ export const refreshToken = async () => {
       const json = await result.json();
 
       setAccessToken(json.jwt);
-    } catch {}
+    } catch (error) {
+      throw new Error(`Unable to create refresh token.`);
+    }
   }
 };
 
 export const refreshLink = setContext(async (_request, { headers }) => {
-  await refreshToken();
+  await handleTokenRefresh();
 
   return {
     headers: {
@@ -118,35 +122,27 @@ export const AuthContext = React.createContext<{
 });
 
 export const setToken = async (token) => {
-  try {
-    setAccessToken(token);
+  setAccessToken(token);
 
-    await fetch(getApiEndpoint().cookieManager, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        authorization: `bearer ${token}`,
-      },
-    });
-  } catch (e) {
-    throw e;
-  }
+  await fetch(getApiEndpoint().cookieManager, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      authorization: `bearer ${token}`,
+    },
+  });
 };
 
 export const removeToken = async () => {
-  try {
-    await fetch(getApiEndpoint().cookieManager, {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        authorization: `bearer ${getAccessToken()}`,
-      },
-    });
+  await fetch(getApiEndpoint().cookieManager, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      authorization: `bearer ${getAccessToken()}`,
+    },
+  });
 
-    removeAccessToken();
-  } catch (e) {
-    throw e;
-  }
+  removeAccessToken();
 };
 
 export const useJwt = () => {
@@ -154,22 +150,12 @@ export const useJwt = () => {
 
   return {
     setToken: async (token: string) => {
-      try {
-        await setToken(token);
-
-        await client.resetStore();
-      } catch (e) {
-        throw e;
-      }
+      await setToken(token);
+      await client.resetStore();
     },
     removeToken: async () => {
-      try {
-        await removeToken();
-
-        await client.resetStore();
-      } catch (e) {
-        throw e;
-      }
+      await removeToken();
+      await client.resetStore();
     },
   };
 };
@@ -225,7 +211,7 @@ export const useVerifyEmail = () => {
   const token = router?.query?.token;
 
   const [loading, setLoading] = React.useState(() => {
-    return !!token;
+    return Boolean(token);
   });
 
   const [done, setDone] = React.useState(() => false);
@@ -251,11 +237,10 @@ export const useVerifyEmail = () => {
   }, []);
 
   const callback = React.useCallback(async () => {
-    if (!token) return;
-
+    if (!token) return false;
     const firstToken: string = Array.isArray(token) ? token[0] : token;
 
-    return await handler(firstToken);
+    return handler(firstToken);
   }, [token]);
 
   const callbackWithCode = async (code: number) => {

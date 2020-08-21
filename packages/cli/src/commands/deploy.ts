@@ -172,8 +172,8 @@ export const handler = async (args) => {
             ]),
         },
       ]).run();
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
     }
   }
 };

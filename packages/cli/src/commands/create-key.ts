@@ -35,8 +35,7 @@ export const handler = async (args: CreateKeyParams) => {
   const profile = saruniJson.serverless[args.stage].awsProfile;
 
   try {
-    // @ts-ignore
-    const hasKey = (await fs.exists(fileName)) as boolean;
+    const hasKey = await fs.pathExists(`${args.name}.pem`);
 
     if (hasKey) {
       console.log(chalk.red(`The file ${fileName}.pem already exists.`));
@@ -65,7 +64,7 @@ export const handler = async (args: CreateKeyParams) => {
     await fs.chmod(path.join(getPaths().base, fileName), '700');
 
     console.log(chalk.green(`Your key was created and saved as ${fileName}`));
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };
