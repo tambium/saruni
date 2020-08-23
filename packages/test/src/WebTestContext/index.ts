@@ -14,3 +14,18 @@ export const createWebTestContext = (handlers: RequestHandlersList) => {
 
   return { worker };
 };
+
+export const mockNextRouter = () => {
+  return jest.mock('next/router', () => {
+    const push = jest.fn();
+
+    const useRouter = jest.fn().mockImplementation(() => {
+      return {
+        push,
+      };
+    });
+    return {
+      useRouter,
+    };
+  });
+};
