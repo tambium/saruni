@@ -3,6 +3,7 @@ import { getPaths } from '@saruni/internal';
 import execa from 'execa';
 import { run } from 'jest';
 import path from 'path';
+import { CommandBuilder } from 'yargs';
 
 babelRequireHook({
   extends: path.join(getPaths().api.base, '.babelrc.js'),
@@ -14,9 +15,16 @@ babelRequireHook({
 
 export const command = 'test';
 
-export const desc = 'Runs jest with the project based setup.';
+export const desc = 'Runs Jest with the project based setup.';
 
-export const handler = async () => {
+export const builder: CommandBuilder = (yargs) => {
+  return yargs.option('watchAll', {
+    default: false,
+    type: 'boolean',
+  });
+};
+
+export const handler = async (args) => {
   try {
     process.env.DATABASE_URL = process.env.DATABASE_URL_TEST;
 
@@ -36,7 +44,15 @@ export const handler = async () => {
       env: { DATABASE_URL: process.env.DATABASE_URL_TEST },
     });
 
-    await run([`--config=${require.resolve('@saruni/config/dist/index.js')}`]);
+    const testCommand = [
+      `--config=${require.resolve('@saruni/config/dist/index.js')}`,
+    ];
+
+    if (args.watchAll) {
+      testCommand.push('--watchAll');
+    }
+
+    await run(testCommand);
   } catch (e) {
     console.log(e);
   }
