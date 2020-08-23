@@ -150,12 +150,20 @@ export const useJwt = () => {
 
   return {
     setToken: async (token: string) => {
-      await setToken(token);
-      await client.resetStore();
+      try {
+        await setToken(token);
+        await client.resetStore();
+      } catch (error) {
+        console.log(error);
+      }
     },
     removeToken: async () => {
-      await removeToken();
-      await client.resetStore();
+      try {
+        await removeToken();
+        await client.resetStore();
+      } catch (error) {
+        console.log(error);
+      }
     },
   };
 };
