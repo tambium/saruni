@@ -92,19 +92,21 @@ const installNodeModulesTasks = ({ newAppDir }) => {
       title: 'Checking node and yarn compatibility',
       task: () => {
         return new Promise((resolve, reject) => {
-          const { engines } = require(path.join(newAppDir, 'package.json'));
+          import(path.join(newAppDir, 'package.json'))
+            .then(({ engines }) => {
+              checkNodeVersion(engines, (_error, result) => {
+                if (result.isSatisfied) {
+                  return resolve();
+                }
 
-          checkNodeVersion(engines, (_error, result) => {
-            if (result.isSatisfied) {
-              return resolve();
-            }
-
-            const errors = Object.keys(result.versions).map((name) => {
-              const { version, wanted } = result.versions[name];
-              return `${name} ${wanted} required, but you have ${version}.`;
-            });
-            return reject(new Error(errors.join('\n')));
-          });
+                const errors = Object.keys(result.versions).map((name) => {
+                  const { version, wanted } = result.versions[name];
+                  return `${name} ${wanted} required, but you have ${version}.`;
+                });
+                return reject(new Error(errors.join('\n')));
+              });
+            })
+            .catch((rejected) => reject(rejected));
         });
       },
     },
@@ -159,23 +161,20 @@ const initializeProjectTasks = ({ newAppDir }) => {
   ];
 };
 
-new Listr(
-  [
-    {
-      title: 'Creating Saruni app',
-      task: () => new Listr(createProjectTasks({ newAppDir })),
-    },
-    {
-      title: 'Installing packages',
-      task: () => new Listr(installNodeModulesTasks({ newAppDir })),
-    },
-    {
-      title: 'Initializing project',
-      task: () => new Listr(initializeProjectTasks({ newAppDir })),
-    },
-  ],
-  { collapse: false, exitOnError: true },
-)
+new Listr([
+  {
+    title: 'Creating Saruni app',
+    task: () => new Listr(createProjectTasks({ newAppDir })),
+  },
+  {
+    title: 'Installing packages',
+    task: () => new Listr(installNodeModulesTasks({ newAppDir })),
+  },
+  {
+    title: 'Initializing project',
+    task: () => new Listr(initializeProjectTasks({ newAppDir })),
+  },
+])
   .run()
   .then(() => {
     console.log();
@@ -185,8 +184,8 @@ new Listr(
       "Inside that directory you can run `yarn sr dev` to start the development server."
     );
   })
-  .catch((e) => {
+  .catch((error) => {
     console.log();
-    console.log(e);
+    console.log(error);
     process.exit(1);
   });

@@ -24,7 +24,7 @@ export const handler = async (args) => {
       break;
   }
 
-  return await execa('npx', ['prisma', 'migrate', 'up', '--experimental'], {
+  return execa('npx', ['prisma', 'migrate', 'up', '--experimental'], {
     cwd: getPaths().api.base,
     stdio: 'inherit',
     env: {

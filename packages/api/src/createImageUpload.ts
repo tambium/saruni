@@ -33,16 +33,15 @@ export const createImageUpload = ({
   bucketName,
 }: ImageUploadProperties) => {
   return middy(async (event) => {
-    let path: string,
-      contentType: string,
-      body: Buffer,
-      extension: string,
-      location: string;
+    let path: string;
+    let contentType: string;
+    let body: Buffer;
+    let extension: string;
+    let location: string;
 
     try {
       const { image, pathPrefix } = event.body;
 
-      // TODO: sanitize the image, check types
       body = Buffer.from(
         image.replace(/^data:image\/\w+;base64,/, ''),
         'base64',

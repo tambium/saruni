@@ -16,12 +16,12 @@ export const refreshToken = () => {
     try {
       const { headers } = event;
 
-      const header = headers['Cookie'] || headers['cookie'];
+      const header = headers.Cookie || headers.cookie;
 
       const { jid } = cookie.parse(header);
 
       payload = verify(jid, process.env.REFRESH_TOKEN_SECRET);
-    } catch (e) {
+    } catch (error) {
       throw createError(401);
     }
 

@@ -10,8 +10,8 @@ export const jwtMiddleware = () => {
     before: (handler, next) => {
       try {
         const authHeader =
-          (handler.event.headers['authorization'] as string) ||
-          (handler.event.headers['Authorization'] as string);
+          (handler.event.headers.authorization as string) ||
+          (handler.event.headers.Authorization as string);
 
         const jwtToken = authHeader.split(' ')[1];
 
@@ -22,7 +22,7 @@ export const jwtMiddleware = () => {
         (handler.context as JwtContext).payload = payload;
         return next();
       } catch {
-        next(createError(401));
+        return next(createError(401));
       }
     },
   };

@@ -1,3 +1,4 @@
+import path from 'path';
 import babelRequireHook from '@babel/register';
 import { getPaths } from '@saruni/internal';
 import execa from 'execa';

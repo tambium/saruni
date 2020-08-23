@@ -18,11 +18,13 @@
   },
   "dependencies": {
     "@saruni/internal": "^0.0.12",
+    "chalk": "^4.1.0",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
     "juice": "^7.0.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "terminal-link": "^2.1.1"
   },
   "devDependencies": {
     "@tambium/typescript-configs": "^1.0.2",
