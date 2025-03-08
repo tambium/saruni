@@ -17,7 +17,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^1.8.2",
     "chalk": "^4.0.0",
     "check-node-version": "^4.0.3",
     "decompress": "^4.2.1",
